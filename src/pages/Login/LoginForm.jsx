@@ -1,18 +1,41 @@
 import { useForm } from 'react-hook-form';
-import logo from './../../assets/images/logo.png'
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import logo from './../../assets/images/logo.png';
+import { BACKEND_DEFAULT_URL } from '../../backendPaths';
+
+const LOGIN_ENDPOINT = `${BACKEND_DEFAULT_URL}/login`;
 
 const LoginForm = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
 
-  const onSubmit = (data) => {
-    console.log("Form Data:", data);
-    // Lógica para autenticação ou qualquer ação necessária
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.post(LOGIN_ENDPOINT, data);
+
+      const { token } = response.data;
+      localStorage.setItem('authToken', token);
+
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 2000);
+
+    } catch (error) {
+      console.error("Erro ao tentar logar:", error);
+
+      let errorMessage = "Falha ao efetuar login. Verifique suas credenciais.";
+      if (error.response && error.response.data && error.response.data.message) {
+        errorMessage = error.response.data.message;
+      }
+
+      toast.error(errorMessage);
+    }
   };
 
   return (
     <div className="flex justify-center items-center h-screen">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
-        <img className="py-10" src={logo} />
+        <img className="py-10" src={logo} alt="Logo" />
         
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4">
@@ -32,18 +55,18 @@ const LoginForm = () => {
           </div>
 
           <div className="mb-6">
-            <label htmlFor="password" className="block text-gray-700 font-bold mb-2">Senha</label>
+            <label htmlFor="senha" className="block text-gray-700 font-bold mb-2">Senha</label>
             <input
               type="password"
-              id="password"
-              {...register("password", { required: "A senha é obrigatória" })}
+              id="senha"
+              {...register("senha", { required: "A senha é obrigatória" })}
               className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-                errors.password ? 'border-red-500' : ''
+                errors.senha ? 'border-red-500' : ''
               }`}
               placeholder="Sua senha"
             />
-            {errors.password && (
-              <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
+            {errors.senha && (
+              <p className="text-red-500 text-xs mt-1">{errors.senha.message}</p>
             )}
           </div>
 
