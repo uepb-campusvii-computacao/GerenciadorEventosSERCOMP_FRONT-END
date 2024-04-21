@@ -1,35 +1,17 @@
 import { useForm } from 'react-hook-form';
-import axios from 'axios';
-import { toast } from 'react-toastify';
 import logo from './../../assets/images/logo.png';
-import { BACKEND_DEFAULT_URL } from '../../backendPaths';
-
-const LOGIN_ENDPOINT = `${BACKEND_DEFAULT_URL}/login`;
+import AuthContext from '../../context/Auth/AuthContext';
+import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const onSubmit = async (data) => {
-    try {
-      const response = await axios.post(LOGIN_ENDPOINT, data);
-
-      const { token } = response.data;
-      localStorage.setItem('authToken', token);
-
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 2000);
-
-    } catch (error) {
-      console.error("Erro ao tentar logar:", error);
-
-      let errorMessage = "Falha ao efetuar login. Verifique suas credenciais.";
-      if (error.response && error.response.data && error.response.data.message) {
-        errorMessage = error.response.data.message;
-      }
-
-      toast.error(errorMessage);
-    }
+    await login(data);
+    navigate("/")
   };
 
   return (
