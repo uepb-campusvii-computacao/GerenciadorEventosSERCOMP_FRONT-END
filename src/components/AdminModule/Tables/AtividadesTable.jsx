@@ -1,10 +1,10 @@
 import PropTypes from "prop-types";
 import { FaSearch } from "react-icons/fa";
-import paths from "../../../paths.js"
+import paths from "../../../paths.js";
 
 const AtividadesTable = ({ data }) => {
   const convertToCSV = () => {
-    const csvHeader = "Atvidade,Responsaveis,Presença";
+    const csvHeader = "Atvidade,Inscrições,Presença";
 
     const csvContent = data
       .map((item) => {
@@ -39,7 +39,7 @@ const AtividadesTable = ({ data }) => {
                 scope="col"
                 className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider"
               >
-                Responsáveis
+                Inscrições
               </th>
               <th
                 scope="col"
@@ -56,7 +56,7 @@ const AtividadesTable = ({ data }) => {
                   {item.name}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-black text-center">
-                  {item.responsaveis.join(", ")}
+                  {item.inscricoes}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-black text-center flex items-center flex-col">
                   <a
@@ -88,7 +88,7 @@ AtividadesTable.propTypes = {
     PropTypes.shape({
       id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
-      responsaveis: PropTypes.arrayOf(PropTypes.string).isRequired,
+      inscricoes: PropTypes.number.isRequired,
     })
   ).isRequired,
 };

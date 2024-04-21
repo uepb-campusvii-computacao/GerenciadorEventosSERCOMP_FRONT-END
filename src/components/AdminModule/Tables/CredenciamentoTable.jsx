@@ -1,8 +1,19 @@
 import PropTypes from "prop-types";
+import { useContext } from "react";
 import { FaEdit } from "react-icons/fa";
-import paths from "../../../paths.js"
+import { toast } from "react-toastify";
+import { BACKEND_DEFAULT_URL } from "../../../backendPaths.js";
+import EventContext from "../../../context/Event/EventContext.jsx";
+import paths from "../../../paths.js";
+import axiosInstance from "./../../../axiosInstance.js";
+
+const toggleCredenciamentoEndpoint = (id_evento, user_id) => {
+  return `${BACKEND_DEFAULT_URL}/admin/events/${id_evento}/inscricoes/credenciamento/${user_id}`;
+}
 
 const CredenciamentoTable = ({ data }) => {
+  const { events } = useContext(EventContext);
+
   const convertToCSV = () => {
     const csvHeader = "ID,Nome,Email,Status Pagamento,Credenciamento";
 
@@ -24,6 +35,16 @@ const CredenciamentoTable = ({ data }) => {
     link.click();
     document.body.removeChild(link);
   };
+
+  const toggleCredential = async (user_id) =>{
+    try{
+      await axiosInstance.put(toggleCredenciamentoEndpoint(events[0].uuid_evento, user_id))
+      toast.success("Credenciamento Marcado")
+    }catch (error) {
+      console.error("Erro ao marcar credenciamento:", error);
+      toast.error("Erro ao marcar credenciamento");
+    }
+  }
 
   return (
     <div className="flex flex-col">
@@ -84,6 +105,7 @@ const CredenciamentoTable = ({ data }) => {
                     type="checkbox"
                     className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                     defaultChecked={item.credential}
+                    onClick={() => toggleCredential(item.id)}
                   />
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-black text-center">

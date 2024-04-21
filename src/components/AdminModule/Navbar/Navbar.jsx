@@ -1,7 +1,11 @@
 import { FaBars, FaUserCircle } from "react-icons/fa";
 import PropTypes from "prop-types";
+import { useContext } from "react";
+import AuthContext from "../../../context/Auth/AuthContext";
 
 const Navbar = ({sidebarOpen, setSidebarOpen}) => {
+  const { logout } = useContext(AuthContext);
+
   return (
     <div className="bg-gray-800 px-4 py-3 flex justify-between">
       <div className="flex items-center text-xl">
@@ -15,7 +19,7 @@ const Navbar = ({sidebarOpen, setSidebarOpen}) => {
             <div className="z-10 hidden bg-white absolute rounded-lg shadow w-32 group-focus:block top-full right-0">
               <ul className="py-2 text-sm">
                 <li>
-                  <a className="block px-4 py-2 text-gray-800 hover:bg-gray-200" href="#">Log Out</a>
+                  <a className="block px-4 py-2 text-gray-800 hover:bg-gray-200" onClick={() => logout()}>Log Out</a>
                 </li>
               </ul>
             </div>

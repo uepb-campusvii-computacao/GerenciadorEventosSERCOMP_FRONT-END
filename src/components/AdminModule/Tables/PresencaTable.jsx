@@ -1,8 +1,35 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import axiosInstance from "../../../axiosInstance";
 
 const PresencaTable = ({ data, atividadeId }) => {
-  const [atividade, setAtividade] = useState({name: "Teste", responsaveis: "Joao, Maria"})
+  const [atividade, setAtividade] = useState({name: "Carregando...", responsaveis: "Sem Informação na Base de Dados"})
+
+  useEffect(() => {
+    const fetchData = async () =>{
+      try{
+        const {data} = await axiosInstance.get(`/admin/atividades/${atividadeId}`)
+        
+        setAtividade(prev => { 
+          return {...prev, name: data.nome}
+        })
+      }catch(error){
+        toast.error("Erro ao pegar dados do servidor, tente novamente")
+      }
+    }
+
+    fetchData();
+  }, [atividadeId])
+
+  const marcarPresenca = async (user_id) => {
+    try{
+      await axiosInstance.put(`/admin/atividades/${atividadeId}/inscricoes/${user_id}/frequencia`)
+      toast.success("Presença registrada!")
+    }catch(error){
+      toast.error("Não foi possível executar a ação")
+    }
+  }
 
   const convertToCSV = () => {
     const csvHeader = "Nome,Email,Presença";
@@ -29,8 +56,8 @@ const PresencaTable = ({ data, atividadeId }) => {
   return (
     <div className="flex flex-col">
       <div className="flex flex-col py-5">
-        <span><strong>Atividade: </strong>{atividade.name}</span>
-        <span><strong>Responsáveis: </strong>{atividade.responsaveis}</span>
+        <span><strong className="text-yellow-500">Atividade: </strong>{atividade.name}</span>
+        <span><strong className="text-yellow-500">Responsáveis: </strong>{atividade.responsaveis}</span>
       </div>
       <div className="w-full overflow-x-auto rounded-lg">
         <table className="w-full">
@@ -70,6 +97,7 @@ const PresencaTable = ({ data, atividadeId }) => {
                     type="checkbox"
                     className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                     defaultChecked={item.presenca}
+                    onClick={() => marcarPresenca(item.id)}
                   />
                 </td>
               </tr>
