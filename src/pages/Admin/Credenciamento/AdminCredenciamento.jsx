@@ -1,28 +1,58 @@
-import CredenciamentoTable from "../../../components/AdminModule/Tables/CredenciamentoTable"
+import { useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import axiosInstance from "../../../axiosInstance";
+import CredenciamentoTable from "../../../components/AdminModule/Tables/CredenciamentoTable";
 import Title from "../../../components/Title/Title";
+import EventContext from "../../../context/Event/EventContext";
+import Loading from "../../Loading/Loading";
 
-const data = [
-    {
-      id: "1",
-      name: "John Doe",
-      email: "john.doe@example.com",
-      paymentStatus: "Pago",
-      credential: true,
-    },
-    {
-      id: "2",
-      name: "Jane Smith",
-      email: "jane.smith@example.com",
-      paymentStatus: "Pendente",
-      credential: false,
-    }
-  ];
+const inscricoesEndpoint = (id_evento) => {
+  return `/admin/events/${id_evento}/inscricoes`;
+}
 
 const AdminCredenciamento = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  const { events } = useContext(EventContext);
+  const [tableData, setTableData] = useState([]);
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      try{
+        const { data } = await axiosInstance.get(inscricoesEndpoint(events[0].uuid_evento))
+
+        const mappedResponse = data.all_subscribers.map(p => {
+          return {
+            id: p.uuid_user,
+            name: p.nome,
+            email: p.email,
+            paymentStatus: p.status_pagamento,
+            credential: p.credenciamento,
+          }
+        })
+
+        setTableData(mappedResponse);
+      }catch (error) {
+        console.error("Erro ao buscar inscritos:", error);
+        toast.error("Erro ao buscar inscritos.");
+      }
+      setIsLoading(false);
+    }
+
+    fetchData();
+  }, [events])
+
   return (
     <>
-      <Title title="Credenciamento"/> 
-      <CredenciamentoTable data={data}/>
+      {
+        isLoading ? (
+          <Loading />
+        ) : (          
+          <>
+            <Title title="Credenciamento"/> 
+            <CredenciamentoTable data={tableData}/>
+          </>
+        )
+      }
     </>
   )
 }

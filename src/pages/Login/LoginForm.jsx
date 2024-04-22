@@ -1,18 +1,23 @@
 import { useForm } from 'react-hook-form';
-import logo from './../../assets/images/logo.png'
+import logo from './../../assets/images/logo.png';
+import AuthContext from '../../context/Auth/AuthContext';
+import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  const onSubmit = (data) => {
-    console.log("Form Data:", data);
-    // Lógica para autenticação ou qualquer ação necessária
+  const onSubmit = async (data) => {
+    await login(data);
+    navigate("/")
   };
 
   return (
     <div className="flex justify-center items-center h-screen">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
-        <img className="py-10" src={logo} />
+        <img className="py-10" src={logo} alt="Logo" />
         
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4">
@@ -32,18 +37,18 @@ const LoginForm = () => {
           </div>
 
           <div className="mb-6">
-            <label htmlFor="password" className="block text-gray-700 font-bold mb-2">Senha</label>
+            <label htmlFor="senha" className="block text-gray-700 font-bold mb-2">Senha</label>
             <input
               type="password"
-              id="password"
-              {...register("password", { required: "A senha é obrigatória" })}
+              id="senha"
+              {...register("senha", { required: "A senha é obrigatória" })}
               className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-                errors.password ? 'border-red-500' : ''
+                errors.senha ? 'border-red-500' : ''
               }`}
               placeholder="Sua senha"
             />
-            {errors.password && (
-              <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
+            {errors.senha && (
+              <p className="text-red-500 text-xs mt-1">{errors.senha.message}</p>
             )}
           </div>
 

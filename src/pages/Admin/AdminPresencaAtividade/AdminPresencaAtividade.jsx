@@ -1,33 +1,54 @@
-import PresencaTable from "../../../components/AdminModule/Tables/PresencaTable";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import axiosInstance from "../../../axiosInstance";
+import PresencaTable from "../../../components/AdminModule/Tables/PresencaTable";
 import Title from "../../../components/Title/Title";
-
-const data = [
-  {
-    id: "1",
-    name: "João Silva",
-    email: "joao@example.com",
-    presenca: true,
-  },
-  {
-    id: "2",
-    name: "Maria Santos",
-    email: "maria@example.com",
-    presenca: false,
-  },
-];
+import Loading from "../../Loading/Loading";
 
 const AdminPresencaAtividade = () => {
   const { id } = useParams();
+  const [isLoading, setIsLoading] = useState(true);
+  const [data, setData] = useState([]);
 
-  console.log(id);
+  const fetchData = async (activityId) => {
+    try {
+      const response = await axiosInstance.get(`/admin/atividades/${activityId}/inscricoes`);
 
-  return (
+      const mappedData = response.data.map((inscrito) => ({
+        id: inscrito.uuid_user,
+        name: inscrito.nome,
+        email: inscrito.email,
+        presenca: inscrito.presenca,
+      }));
+
+      setData(mappedData);
+    } catch (error) {
+      console.error("Erro ao buscar dados de inscritos:", error);
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    if (id) {
+      fetchData(id);
+    }
+  }, [id]);
+
+  return (    
     <>
-      <Title title="Registrar Presença"/> 
-      <PresencaTable data={data} atividadeId={id} />
+      {
+        isLoading ? (
+          <Loading />
+        ) : (          
+          <>
+            <Title title="Registrar Presença" />
+            <PresencaTable data={data} atividadeId={id} />
+          </>
+        )
+      }
     </>
   );
 };
 
 export default AdminPresencaAtividade;
+

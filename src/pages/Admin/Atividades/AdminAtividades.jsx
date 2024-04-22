@@ -1,26 +1,58 @@
 import AtividadesTable from "../../../components/AdminModule/Tables/AtividadesTable";
-import Title from "../../../components/Title/Title"
+import Title from "../../../components/Title/Title";
 
-const data = [
-  {
-    id: "1",
-    name: "Java",
-    responsaveis: ["João Silva"],
-    presenca: true,
-  },
-  {
-    id: "2",
-    name: "Python",
-    responsaveis: ["Maria Santos", "Marcos Silva"],
-    presenca: false,
-  },
-];
+import { useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import axiosInstance from "../../../axiosInstance";
+import EventContext from "../../../context/Event/EventContext";
+import Loading from "../../Loading/Loading";
+
+const getAtividadesDataEndpoint = (event_id) => {
+  return `/admin/events/${event_id}/atividades`;
+};
 
 const AdminAtividades = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  const { events } = useContext(EventContext);
+  const [tableData, setTableData] = useState([]);
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      try{
+        const { data } = await axiosInstance.get(getAtividadesDataEndpoint(events[0].uuid_evento))
+
+        const mappedResponse = data.map(p => {
+          return {
+            id: p.uuid_atividade,
+            name: p.nome,
+            inscricoes: p._count.userAtividade,
+            presenca: false,
+          }
+        })
+
+        setTableData(mappedResponse);
+      }catch (error) {
+        console.error("Erro ao buscar inscritos:", error);
+        toast.error("Erro ao buscar inscritos.");
+      }
+      setIsLoading(false);
+    }
+
+    fetchData();
+  }, [events])
+
   return (
     <>
-      <Title title="Atividades"/>
-      <AtividadesTable data={data} />
+      {
+        isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            <Title title="Atividades"/>
+            <AtividadesTable data={tableData} />
+          </>
+        )
+      }
     </>
   );
 };
