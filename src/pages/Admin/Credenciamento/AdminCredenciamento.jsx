@@ -4,12 +4,14 @@ import axiosInstance from "../../../axiosInstance";
 import CredenciamentoTable from "../../../components/AdminModule/Tables/CredenciamentoTable";
 import Title from "../../../components/Title/Title";
 import EventContext from "../../../context/Event/EventContext";
+import Loading from "../../Loading/Loading";
 
 const inscricoesEndpoint = (id_evento) => {
   return `/admin/events/${id_evento}/inscricoes`;
 }
 
 const AdminCredenciamento = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const { events } = useContext(EventContext);
   const [tableData, setTableData] = useState([]);
   
@@ -33,6 +35,7 @@ const AdminCredenciamento = () => {
         console.error("Erro ao buscar inscritos:", error);
         toast.error("Erro ao buscar inscritos.");
       }
+      setIsLoading(false);
     }
 
     fetchData();
@@ -40,8 +43,16 @@ const AdminCredenciamento = () => {
 
   return (
     <>
-      <Title title="Credenciamento"/> 
-      <CredenciamentoTable data={tableData}/>
+      {
+        isLoading ? (
+          <Loading />
+        ) : (          
+          <>
+            <Title title="Credenciamento"/> 
+            <CredenciamentoTable data={tableData}/>
+          </>
+        )
+      }
     </>
   )
 }

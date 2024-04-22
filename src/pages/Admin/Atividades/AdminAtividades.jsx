@@ -5,12 +5,14 @@ import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axiosInstance from "../../../axiosInstance";
 import EventContext from "../../../context/Event/EventContext";
+import Loading from "../../Loading/Loading";
 
 const getAtividadesDataEndpoint = (event_id) => {
   return `/admin/events/${event_id}/atividades`;
 };
 
 const AdminAtividades = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const { events } = useContext(EventContext);
   const [tableData, setTableData] = useState([]);
   
@@ -33,6 +35,7 @@ const AdminAtividades = () => {
         console.error("Erro ao buscar inscritos:", error);
         toast.error("Erro ao buscar inscritos.");
       }
+      setIsLoading(false);
     }
 
     fetchData();
@@ -40,8 +43,16 @@ const AdminAtividades = () => {
 
   return (
     <>
-      <Title title="Atividades"/>
-      <AtividadesTable data={tableData} />
+      {
+        isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            <Title title="Atividades"/>
+            <AtividadesTable data={tableData} />
+          </>
+        )
+      }
     </>
   );
 };

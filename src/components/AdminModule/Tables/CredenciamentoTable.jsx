@@ -36,14 +36,17 @@ const CredenciamentoTable = ({ data }) => {
     document.body.removeChild(link);
   };
 
-  const toggleCredential = async (user_id) =>{
+  const toggleCredential = async (user_id, { target }) =>{
+    target.disabled = true
     try{
       await axiosInstance.put(toggleCredenciamentoEndpoint(events[0].uuid_evento, user_id))
       toast.success("Credenciamento Marcado")
     }catch (error) {
+      target.checked = !target.checked
       console.error("Erro ao marcar credenciamento:", error);
       toast.error("Erro ao marcar credenciamento");
     }
+    target.disabled = false
   }
 
   return (
@@ -105,7 +108,7 @@ const CredenciamentoTable = ({ data }) => {
                     type="checkbox"
                     className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                     defaultChecked={item.credential}
-                    onClick={() => toggleCredential(item.id)}
+                    onClick={(ref) => toggleCredential(item.id, ref)}
                   />
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-black text-center">

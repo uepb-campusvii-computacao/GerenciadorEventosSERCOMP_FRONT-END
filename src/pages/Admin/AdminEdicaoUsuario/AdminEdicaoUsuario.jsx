@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import axiosInstance from "../../../axiosInstance";
 import Title from "../../../components/Title/Title";
 import EventContext from "../../../context/Event/EventContext";
+import Loading from "../../Loading/Loading";
 
 const getParticipantDataEndpoint = (event_id, user_id) => {
   return `/event/${event_id}/inscricao/${user_id}`;
@@ -23,6 +24,7 @@ const AdminEdicaoUsuario = () => {
   const { user_id } = useParams();
   const { events } = useContext(EventContext);
   const [atividades, setAtividades] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
   const {
     register,
@@ -34,16 +36,24 @@ const AdminEdicaoUsuario = () => {
   });
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const { data } = await axiosInstance.get(
+    const fetchData = async () => {
+      const { data : user } = await axiosInstance.get(
         getParticipantDataEndpoint(events[0].uuid_evento, user_id)
       );
+
+      const { data : activities } = await axiosInstance.get(
+        getFormDataEndpoint(events[0].uuid_evento)
+      );
+
+      await Promise.all([user, activities]);
+
+      setAtividades(activities);
 
       const {
         personal_user_information: { nome, nome_cracha, email, instituicao },
         status_pagamento,
         atividades,
-      } = data;
+      } = user;
 
       setValue("nome", nome);
       setValue("nome_cracha", nome_cracha);
@@ -58,17 +68,11 @@ const AdminEdicaoUsuario = () => {
       setValue("oficina", oficina ? oficina.uuid_atividade : "");
       setValue("minicurso", minicurso ? minicurso.uuid_atividade : "");
       setValue("workshop", workshop ? workshop.uuid_atividade : "");
+
+      setIsLoading(false);
     };
 
-    const fetchActivities = async () => {
-      const { data } = await axiosInstance.get(
-        getFormDataEndpoint(events[0].uuid_evento)
-      );
-      setAtividades(data);
-    };
-
-    fetchUserData(); 
-    fetchActivities(); 
+    fetchData(); 
   }, [setValue, events, user_id]);
 
   async function onSubmit(data) {
@@ -77,7 +81,12 @@ const AdminEdicaoUsuario = () => {
       toast.success("Participante Atualizado!")
     }catch(error){
       console.log(error)
+      toast.error("Erro ao atualizar participante!")
     }
+  }
+
+  if(isLoading){
+    return <Loading />
   }
 
   return (
@@ -98,13 +107,14 @@ const AdminEdicaoUsuario = () => {
               >
                 Nome
               </label>
-              <input
-                {...register("nome")}
+              <input                
                 required
                 type="text"
                 id="first_name"
                 placeholder="Nome"
-                className="input text-gray-900 bg-white shadow border border-gray-300 rounded h-10 p-3"
+                className={`${isSubmitting ? 'blurred' : ''} input text-gray-900 bg-white shadow border border-gray-300 rounded h-10 p-3`}
+                {...register("nome", {required: true})}
+                disabled={isSubmitting}
               />
             </div>
             <div className="flex flex-col">
@@ -115,12 +125,13 @@ const AdminEdicaoUsuario = () => {
                 Nome Cracha
               </label>
               <input
-                {...register("nome_cracha")}
                 required
                 type="text"
                 id="nome_cracha"
                 placeholder="Nome no crachá"
-                className="input text-gray-900 bg-white shadow border border-gray-300 rounded h-10 p-3"
+                className={`${isSubmitting ? 'blurred' : ''} input text-gray-900 bg-white shadow border border-gray-300 rounded h-10 p-3`}
+                {...register("nome_cracha", {required: true})}
+                disabled={isSubmitting}
               />
             </div>
 
@@ -132,12 +143,13 @@ const AdminEdicaoUsuario = () => {
                 E-Mail
               </label>
               <input
-                {...register("email")}
                 required
                 type="email"
                 id="email"
                 placeholder="Email"
-                className="input text-gray-900 bg-white shadow border border-gray-300 rounded h-10 p-3"
+                className={`${isSubmitting ? 'blurred' : ''} input text-gray-900 bg-white shadow border border-gray-300 rounded h-10 p-3`}
+                {...register("email", {required: true})}
+                disabled={isSubmitting}
               />
             </div>
 
@@ -148,13 +160,14 @@ const AdminEdicaoUsuario = () => {
               >
                 Instituição
               </label>
-              <input
-                {...register("instituicao")}
+              <input                
                 required
                 type="text"
                 id="instituicao"
                 placeholder="Instituição"
-                className="input text-gray-900 bg-white shadow border border-gray-300 rounded h-10 p-3"
+                className={`${isSubmitting ? 'blurred' : ''} input text-gray-900 bg-white shadow border border-gray-300 rounded h-10 p-3`}
+                {...register("instituicao", {required: true})}
+                disabled={isSubmitting}
               />
             </div>
           </div>
@@ -163,9 +176,10 @@ const AdminEdicaoUsuario = () => {
         <div className="flex flex-col">
           <p className="text-lg font-bold">Atividades</p>
           <div className="flex flex-col gap-4 w-full">
-            <select
+            <select              
+              className={`${isSubmitting ? 'blurred' : ''} select text-gray-900 bg-white shadow border border-gray-300 rounded p-3`}
               {...register("minicurso")}
-              className="select text-gray-900 bg-white shadow border border-gray-300 rounded p-3"
+              disabled={isSubmitting}
             >
               <option value="">Minicurso...</option>
               {Array.isArray(atividades) &&
@@ -178,8 +192,9 @@ const AdminEdicaoUsuario = () => {
                   ))}
             </select>
             <select
+              className={`${isSubmitting ? 'blurred' : ''} select text-gray-900 bg-white shadow border border-gray-300 rounded p-3`}
               {...register("workshop")}
-              className="select text-gray-900 bg-white shadow border border-gray-300 rounded p-3"
+              disabled={isSubmitting}
             >
               <option value="">Workshop...</option>
               {Array.isArray(atividades) &&
@@ -192,8 +207,9 @@ const AdminEdicaoUsuario = () => {
                   ))}
             </select>
             <select
+              className={`${isSubmitting ? 'blurred' : ''} select text-gray-900 bg-white shadow border border-gray-300 rounded p-3`}
               {...register("oficina")}
-              className="select text-gray-900 bg-white shadow border border-gray-300 rounded p-3"
+              disabled={isSubmitting}
             >
               <option value="">Oficina...</option>
               {Array.isArray(atividades) &&
@@ -212,7 +228,7 @@ const AdminEdicaoUsuario = () => {
           <p className="text-lg font-bold">Status de Pagamento</p>
           <select
             {...register("status_pagamento")}
-            className="select text-gray-900 bg-white shadow border border-gray-300 rounded p-3"
+            className={`${isSubmitting ? 'blurred' : ''} select text-gray-900 bg-white shadow border border-gray-300 rounded p-3`}
           >
             <option value="">Selecione o Status de Pagamento...</option>
             <option value="PENDENTE">Pendente</option>

@@ -16,7 +16,7 @@ const App = () => {
   return (
     <AuthProvider>
       <Router>
-        <ToastContainer position="top-right" autoClose={1500} closeOnClick pauseOnFocusLoss pauseOnHover />
+        <ToastContainer position="top-right" autoClose={1500} limit={3} closeOnClick pauseOnHover />
         
         <Routes>
           <Route path="/login" element={<LoginForm />} />
