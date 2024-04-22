@@ -10,3 +10,8 @@ body {
   background-image: url("./assets/images/bg-stars.svg");
   overflow-x: hidden;
 }
+
+.blurred {
+  filter: blur(1px);
+  transition: filter 0.3s ease;
+}

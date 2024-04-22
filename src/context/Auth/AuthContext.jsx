@@ -1,7 +1,7 @@
-import { createContext, useState } from 'react';
-import { toast } from 'react-toastify';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import { createContext, useState } from 'react';
+import { toast } from 'react-toastify';
 import { BACKEND_DEFAULT_URL } from '../../backendPaths';
 
 const AuthContext = createContext();
@@ -32,10 +32,12 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    setIsAuthenticated(false);
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('userInfo');
-    toast.info('Você saiu.');
+    toast.info('Chauzinho 😺');
+    setTimeout(() => {
+      setIsAuthenticated(false);
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('userInfo');
+    }, 2000)    
   };
 
   return (

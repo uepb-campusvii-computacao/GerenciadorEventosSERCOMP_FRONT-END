@@ -22,13 +22,17 @@ const PresencaTable = ({ data, atividadeId }) => {
     fetchData();
   }, [atividadeId])
 
-  const marcarPresenca = async (user_id) => {
+  const marcarPresenca = async (user_id, { target }) => {
+    target.disabled = true
     try{
       await axiosInstance.put(`/admin/atividades/${atividadeId}/inscricoes/${user_id}/frequencia`)
       toast.success("Presença registrada!")
     }catch(error){
-      toast.error("Não foi possível executar a ação")
+      target.checked = !target.checked
+      console.error("Erro ao marcar presença:", error);
+      toast.error("Não foi possível executar a ação")      
     }
+    target.disabled = false
   }
 
   const convertToCSV = () => {
@@ -97,7 +101,7 @@ const PresencaTable = ({ data, atividadeId }) => {
                     type="checkbox"
                     className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                     defaultChecked={item.presenca}
-                    onClick={() => marcarPresenca(item.id)}
+                    onClick={(ref) => marcarPresenca(item.id, ref)}
                   />
                 </td>
               </tr>

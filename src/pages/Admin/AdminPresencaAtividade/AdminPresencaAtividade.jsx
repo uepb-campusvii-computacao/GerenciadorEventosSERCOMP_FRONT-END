@@ -3,9 +3,11 @@ import { useParams } from "react-router-dom";
 import axiosInstance from "../../../axiosInstance";
 import PresencaTable from "../../../components/AdminModule/Tables/PresencaTable";
 import Title from "../../../components/Title/Title";
+import Loading from "../../Loading/Loading";
 
 const AdminPresencaAtividade = () => {
   const { id } = useParams();
+  const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState([]);
 
   const fetchData = async (activityId) => {
@@ -23,6 +25,7 @@ const AdminPresencaAtividade = () => {
     } catch (error) {
       console.error("Erro ao buscar dados de inscritos:", error);
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -31,10 +34,18 @@ const AdminPresencaAtividade = () => {
     }
   }, [id]);
 
-  return (
+  return (    
     <>
-      <Title title="Registrar Presença" />
-      <PresencaTable data={data} atividadeId={id} />
+      {
+        isLoading ? (
+          <Loading />
+        ) : (          
+          <>
+            <Title title="Registrar Presença" />
+            <PresencaTable data={data} atividadeId={id} />
+          </>
+        )
+      }
     </>
   );
 };
