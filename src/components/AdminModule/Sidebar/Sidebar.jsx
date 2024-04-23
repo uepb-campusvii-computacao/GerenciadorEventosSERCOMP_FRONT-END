@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
-import { FaAddressCard, FaHome, FaUser } from "react-icons/fa";
+import { FaAddressCard, FaHome, FaUserEdit } from "react-icons/fa";
+import { FaUserGroup } from "react-icons/fa6";
 import logo from "../../../assets/images/logo.png";
 import paths from "../../../paths.js";
 
@@ -41,9 +42,16 @@ const Sidebar = ({ sidebarOpen }) => {
           </li>
           <li className="mb-2 rounded hover:shadow">
             <SidebarItem 
+              nome="Inscritos"
+              link={paths.inscritos}
+              icon={<FaUserEdit className="w-6 h-6 mr-2 -mt-1" />}
+            />
+          </li>
+          <li className="mb-2 rounded hover:shadow">
+            <SidebarItem 
               nome="Atividades"
               link={paths.atividades}
-              icon={<FaUser className="w-6 h-6 mr-2 -mt-1" />}
+              icon={<FaUserGroup className="w-6 h-6 mr-2 -mt-1" />}
             />
           </li>
         </ul>
