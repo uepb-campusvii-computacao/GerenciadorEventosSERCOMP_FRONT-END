@@ -1,14 +1,29 @@
 import PropTypes from "prop-types";
 import { FaEdit } from "react-icons/fa";
 import paths from "../../../paths.js";
+import Pagination from "../Pagination/Pagination.jsx";
+import { useState } from "react";
 
 const InscritosTable = ({ data }) => {
+  const [users, setusers] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [usersPerPage] = useState(10);
+
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+
+  // Change page
+  const paginateFront = () => setCurrentPage(currentPage + 1);
+  const paginateBack = () => setCurrentPage(currentPage - 1);
+
+
   const convertToCSV = () => {
     const csvHeader = "ID,Nome,Email,Status Pagamento,Credenciamento";
 
     const csvContent = data
       .map((item) => {
-        return `${item.id},${item.name},${item.email},${item.paymentStatus},${
+        return `${item.id},'${item.name}',${item.email},${item.paymentStatus},${
           item.credential ? "Sim" : "Não"
         }`;
       })
@@ -85,6 +100,15 @@ const InscritosTable = ({ data }) => {
             ))}
           </tbody>
         </table>
+      </div>
+      <div>
+        <Pagination 
+           usersPerPage = {usersPerPage}
+           totalUsers = {users.length}
+           paginateFront = {paginateFront}
+           paginateBack = {paginateBack}
+           currentPage = {currentPage}
+        />
       </div>
       <div className="flex flex-col items-end w-full mt-3 mb-3">
         <button
