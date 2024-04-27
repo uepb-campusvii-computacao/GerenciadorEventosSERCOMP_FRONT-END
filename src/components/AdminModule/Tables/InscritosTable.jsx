@@ -3,20 +3,41 @@ import { FaEdit } from "react-icons/fa";
 import paths from "../../../paths.js";
 import Pagination from "../Pagination/Pagination.jsx";
 import { useState } from "react";
+import { MagnifyingGlass } from "@phosphor-icons/react";
 
 const InscritosTable = ({ data }) => {
-  const [users, setusers] = useState([]);
+  const [users, setUsers] = useState(data);
   const [currentPage, setCurrentPage] = useState(1);
-  const [usersPerPage] = useState(10);
+
+  const [usersPerPage] = useState(20);
 
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
   const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
 
-  // Change page
-  const paginateFront = () => setCurrentPage(currentPage + 1);
-  const paginateBack = () => setCurrentPage(currentPage - 1);
+  function searchUser(nome_user) {
+    const filteredUsers = data.filter((user) =>
+      user.name.toLowerCase().includes(nome_user.toLowerCase())
+    );
+    setUsers(filteredUsers);
+  }
 
+  // Change page
+  const paginateFront = () => {
+    if (indexOfLastUser < users.length) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const paginateBack = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const paginateToggle = (page_number) => {
+    setCurrentPage(page_number);
+  };
 
   const convertToCSV = () => {
     const csvHeader = "ID,Nome,Email,Status Pagamento,Credenciamento";
@@ -42,6 +63,19 @@ const InscritosTable = ({ data }) => {
 
   return (
     <div className="flex flex-col">
+      <div className="relative flex items-center w-full my-4">
+        <input
+          onChange={(e) => searchUser(e.target.value)}
+          className="rounded-md bg-white px-3 py-2 text-gray-600 w-full pl-12"
+          placeholder="Pesquise pelo nome"
+          type="text"
+        />
+        <MagnifyingGlass
+          className="absolute left-3"
+          color="#1d4ed8"
+          size={24}
+        />
+      </div>
       <div className="w-full overflow-x-auto rounded-lg">
         <table className="w-full">
           <thead className="bg-blue-950">
@@ -76,7 +110,7 @@ const InscritosTable = ({ data }) => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {data.map((item) => (
+            {currentUsers.map((item) => (
               <tr key={item.id}>
                 <td className="hidden">{item.id}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-black text-center">
@@ -101,15 +135,18 @@ const InscritosTable = ({ data }) => {
           </tbody>
         </table>
       </div>
-      <div>
-        <Pagination 
-           usersPerPage = {usersPerPage}
-           totalUsers = {users.length}
-           paginateFront = {paginateFront}
-           paginateBack = {paginateBack}
-           currentPage = {currentPage}
-        />
-      </div>
+      {users.length > usersPerPage && (
+        <div className="flex items-center w-full justify-center px-8 py-3">
+          <Pagination
+            usersPerPage={usersPerPage}
+            totalUsers={users.length}
+            paginateFront={paginateFront}
+            paginateBack={paginateBack}
+            currentPage={currentPage}
+            paginateToggle={paginateToggle}
+          />
+        </div>
+      )}
       <div className="flex flex-col items-end w-full mt-3 mb-3">
         <button
           onClick={convertToCSV}

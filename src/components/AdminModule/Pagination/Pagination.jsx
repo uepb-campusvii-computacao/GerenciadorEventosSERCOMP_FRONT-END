@@ -6,14 +6,16 @@ export default function Pagination({
   paginateFront,
   paginateBack,
   currentPage,
+  paginateToggle,
 }) {
+  const total_pages = Math.ceil(totalUsers / usersPerPage);
+  const pages = Array.from({ length: total_pages }, (_, index) => index + 1);
+
   return (
-    <div className="py-2">
+    <div className="flex flex-col items-center justify-center py-3">
       <div>
-        <p className="text-sm text-gray-700">
+        <p className="text-sm text-gray-400">
           Showing
-          <span className="font-medium">{currentPage * usersPerPage - 10}</span>
-          to
           <span className="font-medium"> {currentPage * usersPerPage} </span>
           of
           <span className="font-medium"> {totalUsers} </span>
@@ -23,7 +25,7 @@ export default function Pagination({
       <nav className="block"></nav>
       <div>
         <nav
-          className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+          className="relative z-0 inline-flex rounded-md shadow-sm gap-3"
           aria-label="Pagination"
         >
           <button
@@ -32,14 +34,18 @@ export default function Pagination({
             }}
             className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
           >
-            <span>Previous</span>
+            <span>Anterior</span>
           </button>
           <div className="flex items-center gap-2">
-            <span >1</span>
-            <span >2</span>
-            <span >3</span>
-            <span >4</span>
-            <span >5</span>
+            {pages.map((page) => (
+              <button
+                className={`relative inline-flex items-center px-3 py-2 rounded border ${page == currentPage ? 'border-blue-600 bg-blue-600 text-white' : 'border-gray-300 bg-white'} leading-tight text-sm font-medium text-gray-500 hover:opacity-70`}
+                onClick={() => paginateToggle(page)}
+                key={page}
+              >
+                {page}
+              </button>
+            ))}
           </div>
           <button
             onClick={() => {
@@ -47,7 +53,7 @@ export default function Pagination({
             }}
             className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
           >
-            <span>Next</span>
+            <span>Próximo</span>
           </button>
         </nav>
       </div>
