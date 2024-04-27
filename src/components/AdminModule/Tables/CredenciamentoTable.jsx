@@ -17,6 +17,8 @@ const CredenciamentoTable = ({ data }) => {
   const [users, setUsers] = useState(data);
   const [currentPage, setCurrentPage] = useState(1);
 
+  console.log(currentPage)
+
   const [usersPerPage] = useState(20);
 
   const indexOfLastUser = currentPage * usersPerPage;
@@ -128,7 +130,7 @@ const CredenciamentoTable = ({ data }) => {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {currentUsers
-              .filter((a) => a.paymentStatus === "PAGO")
+              .filter((a) => a.paymentStatus === "REALIZADO")
               .map((item) => (
                 <tr key={item.id}>
                   <td className="hidden">{item.id}</td>
