@@ -4,11 +4,13 @@ import paths from "../../../paths.js";
 
 const AtividadesTable = ({ data }) => {
   const convertToCSV = () => {
-    const csvHeader = "Atvidade,Inscrições,Presença";
+    const csvHeader = "Atividade, Inscrições";
+    console.log()
+    console.log(data)
 
     const csvContent = data
       .map((item) => {
-        return `${item.name},${item.responsaveis}`;
+        return `'${item.name}', ${item.inscricoes || 0}`;
       })
       .join("\n");
 
@@ -17,7 +19,7 @@ const AtividadesTable = ({ data }) => {
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
     const link = document.createElement("a");
     link.href = window.URL.createObjectURL(blob);
-    link.setAttribute("download", "presenca.csv");
+    link.setAttribute("download", "inscricoes.csv");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
