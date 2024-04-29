@@ -56,7 +56,15 @@ const AdminHome = () => {
               icon={<FaMoneyBillWave className="h-12 w-12 text-white" />}
               bgColor="bg-blue-400"
               title="Dinheiro arrecadado"
-              value={`R$ ${financialData.totalArrecadado.toString()}`}
+              value={
+                new Intl.NumberFormat('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  }
+                ).format(financialData.totalArrecadado)
+              }
             />
             <InfoCard
               icon={<FaExclamation className="h-12 w-12 text-white" />}

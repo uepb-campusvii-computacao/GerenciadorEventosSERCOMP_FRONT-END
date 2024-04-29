@@ -1,9 +1,10 @@
+import { MagnifyingGlass } from "@phosphor-icons/react";
 import PropTypes from "prop-types";
+import { useState } from "react";
 import { FaEdit } from "react-icons/fa";
+import * as XLSX from 'xlsx';
 import paths from "../../../paths.js";
 import Pagination from "../Pagination/Pagination.jsx";
-import { useState } from "react";
-import { MagnifyingGlass } from "@phosphor-icons/react";
 
 const InscritosTable = ({ data }) => {
   const [users, setUsers] = useState(data);
@@ -38,28 +39,35 @@ const InscritosTable = ({ data }) => {
   const paginateToggle = (page_number) => {
     setCurrentPage(page_number);
   };
-
-  const convertToCSV = () => {
-    const csvHeader = "ID,Nome,Email,Status Pagamento,Credenciamento";
-
-    const csvContent = data
-      .map((item) => {
-        return `${item.id},'${item.name}',${item.email},${item.paymentStatus},${
-          item.credential ? "Sim" : "Não"
-        }`;
-      })
-      .join("\n");
-
-    const csv = `${csvHeader}\n${csvContent}`;
-
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  
+  const convertToExcel = () => {
+    const excelData = [
+      ["ID", "Nome", "Email", "Status Pagamento", "Credenciamento"], // Cabeçalho
+      ...data.map((item) => [
+        item.id,
+        item.name,
+        item.email,
+        item.paymentStatus,
+        item.credential ? "Sim" : "Não",
+      ]),
+    ];
+  
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.aoa_to_sheet(excelData);
+  
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+  
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' });
+  
     const link = document.createElement("a");
     link.href = window.URL.createObjectURL(blob);
-    link.setAttribute("download", "data.csv");
-    document.body.appendChild(link);
+    link.setAttribute("download", "Inscrições.xlsx");
+    document.body.appendChild(link); 
     link.click();
     document.body.removeChild(link);
-  };
+  };  
 
   return (
     <div className="flex flex-col">
@@ -119,8 +127,18 @@ const InscritosTable = ({ data }) => {
                 <td className="px-6 py-4 whitespace-nowrap text-black text-center">
                   {item.email}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-black text-center">
-                  {item.paymentStatus}
+                <td className="px-6 py-4 whitespace-nowrap text-black text-center flex justify-center">
+                  {
+                    item.paymentStatus === 'REALIZADO' ? (
+                      <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
+                        {item.paymentStatus}
+                      </span>
+                    ) : (
+                      <span className="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">
+                        {item.paymentStatus}
+                      </span>
+                    )
+                  }                  
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-black text-center">
                   <a
@@ -149,10 +167,10 @@ const InscritosTable = ({ data }) => {
       )}
       <div className="flex flex-col items-end w-full mt-3 mb-3">
         <button
-          onClick={convertToCSV}
+          onClick={convertToExcel}
           className="bg-green-500 text-white px-4 py-2 rounded-md"
         >
-          Exportar CSV
+          Exportar XLSX
         </button>
       </div>
     </div>
