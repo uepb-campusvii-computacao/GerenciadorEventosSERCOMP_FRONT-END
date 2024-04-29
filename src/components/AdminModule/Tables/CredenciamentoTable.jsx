@@ -1,11 +1,12 @@
+import { MagnifyingGlass } from "@phosphor-icons/react";
 import PropTypes from "prop-types";
 import { useContext, useState } from "react";
 import { toast } from "react-toastify";
+import * as XLSX from 'xlsx';
 import { BACKEND_DEFAULT_URL } from "../../../backendPaths.js";
 import EventContext from "../../../context/Event/EventContext.jsx";
-import axiosInstance from "./../../../axiosInstance.js";
-import { MagnifyingGlass } from "@phosphor-icons/react";
 import Pagination from "../Pagination/Pagination.jsx";
+import axiosInstance from "./../../../axiosInstance.js";
 
 const toggleCredenciamentoEndpoint = (id_evento, user_id) => {
   return `${BACKEND_DEFAULT_URL}/admin/events/${id_evento}/inscricoes/credenciamento/${user_id}`;
@@ -47,23 +48,28 @@ const CredenciamentoTable = ({ data }) => {
     setCurrentPage(page_number);
   };
 
-  const convertToCSV = () => {
-    const csvHeader = "ID,Nome,Nome no crachá,Email,Credenciamento";
-
-    const csvContent = data
-      .map((item) => {
-        return `${item.id},${item.name},${item.email},${item.paymentStatus},${
-          item.credential ? "Sim" : "Não"
-        }`;
-      })
-      .join("\n");
-
-    const csv = `${csvHeader}\n${csvContent}`;
-
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const convertToXLSX = () => {
+    const excelData = data.map((item) => ({
+      ID: item.id,
+      Nome: item.name,
+      "Nome no crachá": item.badgeName,
+      Email: item.email,
+      Credenciamento: item.credential ? "Sim" : "Não",
+    }));
+  
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Dados');
+  
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  
+    const blob = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8',
+    });
+  
     const link = document.createElement("a");
     link.href = window.URL.createObjectURL(blob);
-    link.setAttribute("download", "data.csv");
+    link.setAttribute("download", "Credenciamento.xlsx");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -128,7 +134,6 @@ const CredenciamentoTable = ({ data }) => {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {currentUsers
-              .filter((a) => a.paymentStatus === "PAGO")
               .map((item) => (
                 <tr key={item.id}>
                   <td className="hidden">{item.id}</td>
@@ -165,10 +170,10 @@ const CredenciamentoTable = ({ data }) => {
       )}
       <div className="flex flex-col items-end w-full mt-3 mb-3">
         <button
-          onClick={convertToCSV}
+          onClick={convertToXLSX}
           className="bg-green-500 text-white px-4 py-2 rounded-md"
         >
-          Exportar CSV
+          Exportar XLSX
         </button>
       </div>
     </div>

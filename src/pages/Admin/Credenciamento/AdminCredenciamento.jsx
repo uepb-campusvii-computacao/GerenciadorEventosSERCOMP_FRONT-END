@@ -49,7 +49,7 @@ const AdminCredenciamento = () => {
         ) : (          
           <>
             <Title title="Credenciamento"/> 
-            <CredenciamentoTable data={tableData}/>
+            <CredenciamentoTable data={tableData.filter((a) => a.paymentStatus === "REALIZADO")}/>
           </>
         )
       }

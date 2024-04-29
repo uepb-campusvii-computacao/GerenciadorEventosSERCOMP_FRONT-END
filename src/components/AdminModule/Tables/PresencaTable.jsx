@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import * as XLSX from 'xlsx';
 import axiosInstance from "../../../axiosInstance";
 
 const PresencaTable = ({ data, atividadeId }) => {
@@ -35,23 +36,30 @@ const PresencaTable = ({ data, atividadeId }) => {
     target.disabled = false
   }
 
-  const convertToCSV = () => {
-    const csvHeader = "Nome,Email,Presença";
+  const sanitizeFilename = (filename) => {
+    return filename.replace(/[<>:"/\\|?*]+/g, '-');
+  };
 
-    const csvContent = data
-      .map((item) => {
-        return `${item.name},${item.email},${
-          item.presenca ? "Presente" : "Ausente"
-        }`;
-      })
-      .join("\n");
-
-    const csv = `${csvHeader}\n${csvContent}`;
-
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const convertToXLSX = () => {
+    const excelData = data.map((item) => ({
+      Nome: item.name,
+      Email: item.email,
+      Presenca: item.presenca ? "Presente" : "Ausente",
+    }));
+  
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Presenças');
+  
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  
+    const blob = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8',
+    });
+  
     const link = document.createElement("a");
     link.href = window.URL.createObjectURL(blob);
-    link.setAttribute("download", "presenca.csv");
+    link.setAttribute("download", sanitizeFilename(`Lista Presença - ${atividade.name}.xlsx`));
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -111,10 +119,10 @@ const PresencaTable = ({ data, atividadeId }) => {
       </div>
       <div className="flex flex-col items-end w-full mt-3 mb-3">
         <button
-          onClick={convertToCSV}
+          onClick={convertToXLSX}
           className="bg-green-500 text-white px-4 py-2 rounded-md"
         >
-          Exportar CSV
+          Exportar XLSX
         </button>
       </div>
     </div>
