@@ -1,25 +1,28 @@
 import PropTypes from "prop-types";
 import { FaSearch } from "react-icons/fa";
+import * as XLSX from 'xlsx';
 import paths from "../../../paths.js";
 
 const AtividadesTable = ({ data }) => {
-  const convertToCSV = () => {
-    const csvHeader = "Atividade, Inscrições";
-    console.log()
-    console.log(data)
-
-    const csvContent = data
-      .map((item) => {
-        return `'${item.name}', ${item.inscricoes || 0}`;
-      })
-      .join("\n");
-
-    const csv = `${csvHeader}\n${csvContent}`;
-
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const convertToXLSX = () => {
+    const excelData = data.map((item) => ({
+      Atividade: item.name,
+      Inscricoes: item.inscricoes || 0,
+    }));
+  
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Inscrições');
+  
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  
+    const blob = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8',
+    });
+  
     const link = document.createElement("a");
     link.href = window.URL.createObjectURL(blob);
-    link.setAttribute("download", "inscricoes.csv");
+    link.setAttribute("download", "Atividades.xlsx");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -75,10 +78,10 @@ const AtividadesTable = ({ data }) => {
       </div>
       <div className="flex flex-col items-end w-full mt-3 mb-3">
         <button
-          onClick={convertToCSV}
+          onClick={convertToXLSX}
           className="bg-green-500 text-white px-4 py-2 rounded-md"
         >
-          Exportar CSV
+          Exportar XLSX
         </button>
       </div>
     </div>
