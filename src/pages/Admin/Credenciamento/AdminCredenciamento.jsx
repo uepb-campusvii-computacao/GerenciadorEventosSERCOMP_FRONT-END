@@ -8,53 +8,55 @@ import Loading from "../../Loading/Loading";
 
 const inscricoesEndpoint = (id_evento) => {
   return `/admin/events/${id_evento}/inscricoes`;
-}
+};
 
 const AdminCredenciamento = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { events } = useContext(EventContext);
   const [tableData, setTableData] = useState([]);
-  
+
   useEffect(() => {
     const fetchData = async () => {
-      try{
-        const { data } = await axiosInstance.get(inscricoesEndpoint(events[0].uuid_evento))
+      try {
+        const { data } = await axiosInstance.get(
+          inscricoesEndpoint(events[0].uuid_evento)
+        );
 
-        const mappedResponse = data.all_subscribers.map(p => {
+        const mappedResponse = data.all_subscribers.map((p) => {
           return {
             id: p.uuid_user,
             name: p.nome,
             email: p.email,
             paymentStatus: p.status_pagamento,
             credential: p.credenciamento,
-          }
-        })
+          };
+        });
 
         setTableData(mappedResponse);
-      }catch (error) {
+      } catch (error) {
         console.error("Erro ao buscar inscritos:", error);
         toast.error("Erro ao buscar inscritos.");
       }
       setIsLoading(false);
-    }
+    };
 
     fetchData();
-  }, [events])
+  }, [events]);
 
   return (
     <>
-      {
-        isLoading ? (
-          <Loading />
-        ) : (          
-          <>
-            <Title title="Credenciamento"/> 
-            <CredenciamentoTable data={tableData.filter((a) => a.paymentStatus === "REALIZADO")}/>
-          </>
-        )
-      }
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <>
+          <Title title="Credenciamento" />
+          <CredenciamentoTable
+            data={tableData.filter((a) => a.paymentStatus === "REALIZADO")}
+          />
+        </>
+      )}
     </>
-  )
-}
+  );
+};
 
-export default AdminCredenciamento
+export default AdminCredenciamento;

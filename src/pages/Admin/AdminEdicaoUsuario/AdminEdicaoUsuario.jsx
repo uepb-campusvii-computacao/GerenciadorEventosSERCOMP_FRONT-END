@@ -1,12 +1,18 @@
 import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaSpinner } from "react-icons/fa";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import axiosInstance from "../../../axiosInstance";
 import Title from "../../../components/Title/Title";
 import EventContext from "../../../context/Event/EventContext";
 import Loading from "../../Loading/Loading";
+import { Trash } from "@phosphor-icons/react";
+import Modal from "../../../components/ui/Modal";
+
+const deleteUserDataEndpoint = (user_id) => {
+  return `/admin/user/${user_id}`
+}
 
 const getParticipantDataEndpoint = (event_id, user_id) => {
   return `/event/${event_id}/inscricao/${user_id}`;
@@ -25,6 +31,8 @@ const AdminEdicaoUsuario = () => {
   const { events } = useContext(EventContext);
   const [atividades, setAtividades] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -35,13 +43,21 @@ const AdminEdicaoUsuario = () => {
     mode: "all",
   });
 
+  async function handleDeleteUser(){
+    await axiosInstance.delete(
+      deleteUserDataEndpoint(user_id)
+    );
+
+    navigate("/inscritos")
+  }
+
   useEffect(() => {
     const fetchData = async () => {
-      const { data : user } = await axiosInstance.get(
+      const { data: user } = await axiosInstance.get(
         getParticipantDataEndpoint(events[0].uuid_evento, user_id)
       );
 
-      const { data : activities } = await axiosInstance.get(
+      const { data: activities } = await axiosInstance.get(
         getFormDataEndpoint(events[0].uuid_evento)
       );
 
@@ -61,9 +77,11 @@ const AdminEdicaoUsuario = () => {
       setValue("instituicao", instituicao);
       setValue("status_pagamento", status_pagamento);
 
-      const oficina = atividades.find(a => a.tipo_atividade === "OFICINA");
-      const minicurso = atividades.find(a => a.tipo_atividade === "MINICURSO");
-      const workshop = atividades.find(a => a.tipo_atividade === "WORKSHOP");
+      const oficina = atividades.find((a) => a.tipo_atividade === "OFICINA");
+      const minicurso = atividades.find(
+        (a) => a.tipo_atividade === "MINICURSO"
+      );
+      const workshop = atividades.find((a) => a.tipo_atividade === "WORKSHOP");
 
       setValue("oficina", oficina ? oficina.uuid_atividade : "");
       setValue("minicurso", minicurso ? minicurso.uuid_atividade : "");
@@ -72,21 +90,23 @@ const AdminEdicaoUsuario = () => {
       setIsLoading(false);
     };
 
-    fetchData(); 
+    fetchData();
   }, [setValue, events, user_id]);
 
   async function onSubmit(data) {
-    try{
-      await axiosInstance.put(editParticipantDataEndpoint(user_id), {...data})
-      toast.success("Participante Atualizado!")
-    }catch(error){
-      console.log(error)
-      toast.error("Erro ao atualizar participante!")
+    try {
+      await axiosInstance.put(editParticipantDataEndpoint(user_id), {
+        ...data,
+      });
+      toast.success("Participante Atualizado!");
+    } catch (error) {
+      console.log(error);
+      toast.error("Erro ao atualizar participante!");
     }
   }
 
-  if(isLoading){
-    return <Loading />
+  if (isLoading) {
+    return <Loading />;
   }
 
   return (
@@ -107,13 +127,15 @@ const AdminEdicaoUsuario = () => {
               >
                 Nome
               </label>
-              <input                
+              <input
                 required
                 type="text"
                 id="first_name"
                 placeholder="Nome"
-                className={`${isSubmitting ? 'blurred' : ''} input text-gray-900 bg-white shadow border border-gray-300 rounded h-10 p-3`}
-                {...register("nome", {required: true})}
+                className={`${
+                  isSubmitting ? "blurred" : ""
+                } input text-gray-900 bg-white shadow border border-gray-300 rounded h-10 p-3`}
+                {...register("nome", { required: true })}
                 disabled={isSubmitting}
               />
             </div>
@@ -129,8 +151,10 @@ const AdminEdicaoUsuario = () => {
                 type="text"
                 id="nome_cracha"
                 placeholder="Nome no crachá"
-                className={`${isSubmitting ? 'blurred' : ''} input text-gray-900 bg-white shadow border border-gray-300 rounded h-10 p-3`}
-                {...register("nome_cracha", {required: true})}
+                className={`${
+                  isSubmitting ? "blurred" : ""
+                } input text-gray-900 bg-white shadow border border-gray-300 rounded h-10 p-3`}
+                {...register("nome_cracha", { required: true })}
                 disabled={isSubmitting}
               />
             </div>
@@ -147,8 +171,10 @@ const AdminEdicaoUsuario = () => {
                 type="email"
                 id="email"
                 placeholder="Email"
-                className={`${isSubmitting ? 'blurred' : ''} input text-gray-900 bg-white shadow border border-gray-300 rounded h-10 p-3`}
-                {...register("email", {required: true})}
+                className={`${
+                  isSubmitting ? "blurred" : ""
+                } input text-gray-900 bg-white shadow border border-gray-300 rounded h-10 p-3`}
+                {...register("email", { required: true })}
                 disabled={isSubmitting}
               />
             </div>
@@ -160,13 +186,15 @@ const AdminEdicaoUsuario = () => {
               >
                 Instituição
               </label>
-              <input                
+              <input
                 required
                 type="text"
                 id="instituicao"
                 placeholder="Instituição"
-                className={`${isSubmitting ? 'blurred' : ''} input text-gray-900 bg-white shadow border border-gray-300 rounded h-10 p-3`}
-                {...register("instituicao", {required: true})}
+                className={`${
+                  isSubmitting ? "blurred" : ""
+                } input text-gray-900 bg-white shadow border border-gray-300 rounded h-10 p-3`}
+                {...register("instituicao", { required: true })}
                 disabled={isSubmitting}
               />
             </div>
@@ -176,8 +204,10 @@ const AdminEdicaoUsuario = () => {
         <div className="flex flex-col">
           <p className="text-lg font-bold">Atividades</p>
           <div className="flex flex-col gap-4 w-full">
-            <select              
-              className={`${isSubmitting ? 'blurred' : ''} select text-gray-900 bg-white shadow border border-gray-300 rounded p-3`}
+            <select
+              className={`${
+                isSubmitting ? "blurred" : ""
+              } select text-gray-900 bg-white shadow border border-gray-300 rounded p-3`}
               {...register("minicurso")}
               disabled={isSubmitting}
             >
@@ -185,14 +215,20 @@ const AdminEdicaoUsuario = () => {
               {Array.isArray(atividades) &&
                 atividades
                   .filter((a) => a.tipo_atividade === "MINICURSO")
-                  .map((mc) => (
-                    <option key={mc.uuid_atividade} value={mc.uuid_atividade}>
-                      {mc.nome}
+                  .map((minicurso) => (
+                    <option
+                      key={minicurso.uuid_atividade}
+                      value={minicurso.uuid_atividade}
+                    >
+                      {minicurso.nome} - Vagas{" "}
+                      {`(${minicurso._count.userAtividade}/${minicurso.max_participants})`}
                     </option>
                   ))}
             </select>
             <select
-              className={`${isSubmitting ? 'blurred' : ''} select text-gray-900 bg-white shadow border border-gray-300 rounded p-3`}
+              className={`${
+                isSubmitting ? "blurred" : ""
+              } select text-gray-900 bg-white shadow border border-gray-300 rounded p-3`}
               {...register("workshop")}
               disabled={isSubmitting}
             >
@@ -200,14 +236,20 @@ const AdminEdicaoUsuario = () => {
               {Array.isArray(atividades) &&
                 atividades
                   .filter((a) => a.tipo_atividade === "WORKSHOP")
-                  .map((ws) => (
-                    <option key={ws.uuid_atividade} value={ws.uuid_atividade}>
-                      {ws.nome}
+                  .map((workshop) => (
+                    <option
+                      key={workshop.uuid_atividade}
+                      value={workshop.uuid_atividade}
+                    >
+                      {workshop.nome} - Vagas{" "}
+                      {`(${workshop._count.userAtividade}/${workshop.max_participants})`}
                     </option>
                   ))}
             </select>
             <select
-              className={`${isSubmitting ? 'blurred' : ''} select text-gray-900 bg-white shadow border border-gray-300 rounded p-3`}
+              className={`${
+                isSubmitting ? "blurred" : ""
+              } select text-gray-900 bg-white shadow border border-gray-300 rounded p-3`}
               {...register("oficina")}
               disabled={isSubmitting}
             >
@@ -215,9 +257,13 @@ const AdminEdicaoUsuario = () => {
               {Array.isArray(atividades) &&
                 atividades
                   .filter((a) => a.tipo_atividade === "OFICINA")
-                  .map((oc) => (
-                    <option key={oc.uuid_atividade} value={oc.uuid_atividade}>
-                      {oc.nome}
+                  .map((oficina) => (
+                    <option
+                      key={oficina.uuid_atividade}
+                      value={oficina.uuid_atividade}
+                    >
+                      {oficina.nome} - Vagas{" "}
+                      {`(${oficina._count.userAtividade}/${oficina.max_participants})`}
                     </option>
                   ))}
             </select>
@@ -228,16 +274,19 @@ const AdminEdicaoUsuario = () => {
           <p className="text-lg font-bold">Status de Pagamento</p>
           <select
             {...register("status_pagamento")}
-            className={`${isSubmitting ? 'blurred' : ''} select text-gray-900 bg-white shadow border border-gray-300 rounded p-3`}
+            className={`${
+              isSubmitting ? "blurred" : ""
+            } select text-gray-900 bg-white shadow border border-gray-300 rounded p-3`}
           >
             <option value="">Selecione o Status de Pagamento...</option>
             <option value="PENDENTE">Pendente</option>
             <option value="REALIZADO">Realizado</option>
             <option value="EXPIRADO">Expirado</option>
+            <option value="GRATUITO">Gratuito</option>
           </select>
         </div>
 
-        <div className="space-y-2 flex items-center justify-center">
+        <div className="flex items-center justify-center gap-4 flex-col sm:flex-row">
           <button
             type="submit"
             disabled={isSubmitting}
@@ -252,8 +301,45 @@ const AdminEdicaoUsuario = () => {
               "Salvar"
             )}
           </button>
+
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            disabled={isSubmitting}
+            className="btn-primary inline-flex items-center justify-center rounded h-10 bg-red-500 w-60 text-white font-bold"
+          >
+            {isSubmitting ? (
+              <>
+                <FaSpinner className="animate-spin mr-2" />
+                Aguarde...
+              </>
+            ) : (
+              "Excluir usuario"
+            )}
+          </button>
         </div>
       </form>
+
+      <Modal open={open} onClose={() => setOpen(false)}>
+        <div className="text-center w-56">
+          <Trash size={56} className="mx-auto text-red-500" />
+          <div className="mx-auto my-4 w-48">
+            <h3 className="text-lg font-black text-gray-800">Confirm Delete</h3>
+            <p className="text-sm text-gray-500">
+              Você realmente quer excluir esse item?
+            </p>
+          </div>
+          <div className="flex gap-4">
+            <button onClick={() => handleDeleteUser()} className="bg-red-500 rounded-md px-3 py-2 w-full">Excluir</button>
+            <button
+              className="bg-blue-300 rounded-md px-3 py-2 w-full"
+              onClick={() => setOpen(false)}
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </Modal>
     </section>
   );
 };
