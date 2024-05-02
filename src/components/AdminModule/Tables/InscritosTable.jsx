@@ -20,6 +20,7 @@ const InscritosTable = ({ data }) => {
     const filteredUsers = data.filter((user) =>
       user.name.toLowerCase().includes(nome_user.toLowerCase())
     );
+    setCurrentPage(1);
     setUsers(filteredUsers);
   }
 
