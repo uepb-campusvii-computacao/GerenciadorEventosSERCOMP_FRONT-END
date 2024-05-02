@@ -3,46 +3,29 @@ on:
     push:
         branches:
             - master
+
 jobs:
-    build_deploy:
-        runs-on: ubuntu-latest
+  build:
 
-        strategy:
-            matrix:
-              node-version: [21.6.2]
+    runs-on: ubuntu-latest
 
-        steps:
-            - name: "Baixar o código"
-              uses: actions/checkout@v4
-
-            - name: "Copiar arquivos para o hostgator"
-              uses: appleboy/scp-action@v0.1.7
-              with:
-                host: ${{ secrets.HOST }}
-                username: ${{ secrets.USERNAME }}
-                key: ${{ secrets.SSH_PRIVATE_KEY }}
-                passphrase: ${{ secrets.PASSPHRASE }}
-                source: "."
-                target: "/gerencia.sercomppb.com.br"
-
-            - name: Set up Node.js
-              uses: actions/setup-node@v3
-              with:
-                  node-version: ${{ matrix.node-version }}
-                  cache: 'npm'
-          
-            - name: Install dependencies
-              run: npm ci
-            - name: Create env file
-              run: |
-                echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env.local
-            
-            - name: "Build da aplicação"
-              uses: appleboy/ssh-action@v1.0.3
-              with:
-                host: ${{ secrets.HOST }}
-                username: ${{ secrets.USERNAME }}
-                key: ${{ secrets.SSH_PRIVATE_KEY }}
-                script: |
-                   cd /gerencia.sercomppb.com.br
-                   npm run build
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '21.x'
+    - name: Install npm dependencies
+      run: npm install
+    - name: Run build task
+      run: npm run build --if-present
+    - name: Deploy to Server
+      uses: easingthemes/ssh-deploy@main
+      with:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          ARGS: "-rlgoDzvc -i --delete"
+          SOURCE: "dist/"
+          REMOTE_HOST: ${{ secrets.HOST }}
+          REMOTE_USER: ${{ secrets.USERNAME }}
+          TARGET: "/gerencia.sercomppb.com.br"
+          EXCLUDE: "/dist/, /node_modules/"
