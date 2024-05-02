@@ -27,5 +27,5 @@ jobs:
           SOURCE: "dist/"
           REMOTE_HOST: ${{ secrets.HOST }}
           REMOTE_USER: ${{ secrets.USERNAME }}
-          TARGET: "/gerencia.sercomppb.com.br"
+          TARGET: "/teste"
           EXCLUDE: "/dist/, /node_modules/"
