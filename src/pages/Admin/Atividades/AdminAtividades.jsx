@@ -27,6 +27,7 @@ const AdminAtividades = () => {
             name: p.nome,
             inscricoes: p._count.userAtividade,
             presenca: false,
+            tipo_atividade: p.tipo_atividade
           }
         })
 
