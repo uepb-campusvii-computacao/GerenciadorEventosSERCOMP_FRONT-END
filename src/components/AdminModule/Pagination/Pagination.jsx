@@ -13,15 +13,6 @@ export default function Pagination({
 
   return (
     <div className="flex flex-col items-center justify-center py-3">
-      <div>
-        <p className="text-sm text-gray-400">
-          Showing
-          <span className="font-medium"> {currentPage * usersPerPage} </span>
-          of
-          <span className="font-medium"> {totalUsers} </span>
-          results
-        </p>
-      </div>
       <nav className="block"></nav>
       <div>
         <nav
