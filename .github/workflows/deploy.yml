@@ -21,6 +21,7 @@ jobs:
                 host: ${{ secrets.HOST }}
                 username: ${{ secrets.USERNAME }}
                 key: ${{ secrets.SSH_PRIVATE_KEY }}
+                passphrase: ${{ secrets.PASSPHRASE }}
                 source: "."
                 target: "/gerencia.sercomppb.com.br"
 
