@@ -4,7 +4,7 @@ import { useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import * as XLSX from 'xlsx';
 import paths from "../../../paths.js";
-import Pagination from "../Pagination/Pagination.jsx";
+import Pagination from "../../ui/Pagination.jsx";
 
 const InscritosTable = ({ data }) => {
   const [users, setUsers] = useState(data);
@@ -43,19 +43,31 @@ const InscritosTable = ({ data }) => {
   
   const convertToExcel = () => {
     const excelData = [
-      ["ID", "Nome", "Email", "Status Pagamento", "Credenciamento"], // Cabeçalho
+      ["ID", "Nome", "Nome no crachá", "Email", "Status Pagamento", "Credenciamento"], // Cabeçalho
       ...data.map((item) => [
         item.id,
         item.name,
+        item.nome_cracha,
         item.email,
         item.paymentStatus,
         item.credential ? "Sim" : "Não",
       ]),
     ];
-  
+
+    
     const workbook = XLSX.utils.book_new();
+
     const worksheet = XLSX.utils.aoa_to_sheet(excelData);
-  
+    
+    worksheet['!cols'] = [
+      { wch: 40 },
+      { wch: 40 },
+      { wch: 30 },
+      { wch: 40 },
+      { wch: 20 },
+      { wch: 20 },
+    ];
+    
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
   
     const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
@@ -102,6 +114,12 @@ const InscritosTable = ({ data }) => {
                 scope="col"
                 className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider"
               >
+                Nome no crachá
+              </th>
+              <th
+                scope="col"
+                className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider"
+              >
                 Email
               </th>
               <th
@@ -124,6 +142,9 @@ const InscritosTable = ({ data }) => {
                 <td className="hidden">{item.id}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-black text-center">
                   {item.name}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-black text-center">
+                  {item.nome_cracha}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-black text-center">
                   {item.email}

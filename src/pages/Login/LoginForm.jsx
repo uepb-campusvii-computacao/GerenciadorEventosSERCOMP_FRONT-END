@@ -12,6 +12,7 @@ const LoginForm = () => {
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
+    console.log(data)
     await login(data);
     navigate("/")
   };

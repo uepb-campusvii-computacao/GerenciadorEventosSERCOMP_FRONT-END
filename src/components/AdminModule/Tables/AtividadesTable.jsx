@@ -6,7 +6,8 @@ import { useEffect, useState } from "react";
 
 const AtividadesTable = ({ data }) => {
   const [atividadesExibidas, setAtividadesExibidas] = useState(data);
-  const [tipoAtividadeSelecionada, setTipoAtividadeSelecionada] = useState(null);
+  const [tipoAtividadeSelecionada, setTipoAtividadeSelecionada] =
+    useState(null);
 
   function filtrarAtividades(tipoAtividade) {
     const atividadesFiltradas = data.filter(
@@ -21,15 +22,22 @@ const AtividadesTable = ({ data }) => {
     filtrarAtividades("MINICURSO");
   }, []);
 
-
   const convertToXLSX = () => {
     const excelData = atividadesExibidas.map((item) => ({
       Atividade: item.name,
       Inscricoes: item.inscricoes || 0,
+      Vagas: item.max_participants || 0,
     }));
 
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.json_to_sheet(excelData);
+
+    worksheet['!cols'] = [
+      { wch: 70 }, // Largura da coluna para 'Atividade'
+      { wch: 10 }, // Largura da coluna para 'Inscricoes'
+      { wch: 10 }, // Largura da coluna para 'Vagas'
+    ];
+
     XLSX.utils.book_append_sheet(workbook, worksheet, "Inscrições");
 
     const excelBuffer = XLSX.write(workbook, {
@@ -53,13 +61,34 @@ const AtividadesTable = ({ data }) => {
     <div className="flex flex-col">
       <div className="w-full overflow-x-auto rounded-lg">
         <div className="w-full flex flex-col items-center justify-center sm:gap-12 gap-4 sm:flex-row sm:mb-8 mb-4">
-          <button onClick={() => filtrarAtividades("MINICURSO")} className={`hover:bg-blue-900 w-full sm:w-auto ${tipoAtividadeSelecionada === "MINICURSO" ? "bg-blue-950": "bg-blue-800"} transition-colors font-bold text-3xl px-4 py-3 text-center rounded-md shadow-md`}>
+          <button
+            onClick={() => filtrarAtividades("MINICURSO")}
+            className={`hover:bg-blue-900 w-full sm:w-auto ${
+              tipoAtividadeSelecionada === "MINICURSO"
+                ? "bg-blue-950"
+                : "bg-blue-800"
+            } transition-colors font-bold text-3xl px-4 py-3 text-center rounded-md shadow-md`}
+          >
             Minucursos
           </button>
-          <button onClick={() => filtrarAtividades("OFICINA")} className={`hover:bg-blue-900 w-full sm:w-auto ${tipoAtividadeSelecionada === "OFICINA" ? "bg-blue-950": "bg-blue-800"} transition-colors font-bold text-3xl px-4 py-3 text-center rounded-md shadow-md`}>
+          <button
+            onClick={() => filtrarAtividades("OFICINA")}
+            className={`hover:bg-blue-900 w-full sm:w-auto ${
+              tipoAtividadeSelecionada === "OFICINA"
+                ? "bg-blue-950"
+                : "bg-blue-800"
+            } transition-colors font-bold text-3xl px-4 py-3 text-center rounded-md shadow-md`}
+          >
             Oficinas
           </button>
-          <button onClick={() => filtrarAtividades("WORKSHOP")} className={`hover:bg-blue-900 w-full sm:w-auto ${tipoAtividadeSelecionada === "WORKSHOP" ? "bg-blue-950": "bg-blue-800"} transition-colors font-bold text-3xl px-4 py-3 text-center rounded-md shadow-md`}>
+          <button
+            onClick={() => filtrarAtividades("WORKSHOP")}
+            className={`hover:bg-blue-900 w-full sm:w-auto ${
+              tipoAtividadeSelecionada === "WORKSHOP"
+                ? "bg-blue-950"
+                : "bg-blue-800"
+            } transition-colors font-bold text-3xl px-4 py-3 text-center rounded-md shadow-md`}
+          >
             Workshops
           </button>
         </div>
@@ -76,7 +105,7 @@ const AtividadesTable = ({ data }) => {
                 scope="col"
                 className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider"
               >
-                Inscrições
+                Vagas
               </th>
               <th
                 scope="col"
@@ -93,7 +122,7 @@ const AtividadesTable = ({ data }) => {
                   {item.name}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-black text-center">
-                  {item.inscricoes}
+                  {`${item.inscricoes}/${item.max_participants}`}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-black text-center flex items-center flex-col">
                   <a
