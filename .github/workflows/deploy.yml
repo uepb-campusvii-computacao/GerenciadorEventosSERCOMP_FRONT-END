@@ -2,7 +2,7 @@ name: "Deploy para hostgator"
 on: 
     push:
         branches:
-            - deploy
+            - master
 
 jobs:
   build:
