@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import * as XLSX from 'xlsx';
 import { BACKEND_DEFAULT_URL } from "../../../backendPaths.js";
 import EventContext from "../../../context/Event/EventContext.jsx";
-import Pagination from "../Pagination/Pagination.jsx";
+import Pagination from "../../ui/Pagination.jsx";
 import axiosInstance from "./../../../axiosInstance.js";
 
 const toggleCredenciamentoEndpoint = (id_evento, user_id) => {
@@ -52,13 +52,23 @@ const CredenciamentoTable = ({ data }) => {
     const excelData = data.map((item) => ({
       ID: item.id,
       Nome: item.name,
-      "Nome no crachá": item.badgeName,
+      "Nome no crachá": item.nome_cracha,
       Email: item.email,
       Credenciamento: item.credential ? "Sim" : "Não",
     }));
-  
+
+    
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.json_to_sheet(excelData);
+
+    worksheet['!cols'] = [
+      { wch: 40 },
+      { wch: 40 },
+      { wch: 30 },
+      { wch: 40 },
+      { wch: 20 },
+    ];
+
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Dados');
   
     const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
@@ -122,6 +132,12 @@ const CredenciamentoTable = ({ data }) => {
                 scope="col"
                 className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider"
               >
+                Nome no crachá
+              </th>
+              <th
+                scope="col"
+                className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider"
+              >
                 Email
               </th>
               <th
@@ -139,6 +155,9 @@ const CredenciamentoTable = ({ data }) => {
                   <td className="hidden">{item.id}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-black text-center">
                     {item.name}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-black text-center">
+                    {item.nome_cracha}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-black text-center">
                     {item.email}

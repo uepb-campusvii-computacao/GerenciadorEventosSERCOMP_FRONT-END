@@ -22,13 +22,14 @@ const AdminCredenciamento = () => {
           inscricoesEndpoint(events[0].uuid_evento)
         );
 
-        const mappedResponse = data.all_subscribers.map((p) => {
+        const mappedResponse = data.all_subscribers.map((item) => {
           return {
-            id: p.uuid_user,
-            name: p.nome,
-            email: p.email,
-            paymentStatus: p.status_pagamento,
-            credential: p.credenciamento,
+            id: item.uuid_user,
+            name: item.nome,
+            nome_cracha: item.nome_cracha,
+            email: item.email,
+            paymentStatus: item.status_pagamento,
+            credential: item.credenciamento,
           };
         });
 

@@ -21,13 +21,13 @@ const AdminAtividades = () => {
       try{
         const { data } = await axiosInstance.get(getAtividadesDataEndpoint(events[0].uuid_evento))
 
-        const mappedResponse = data.map(p => {
+        const mappedResponse = data.map(item => {
           return {
-            id: p.uuid_atividade,
-            name: p.nome,
-            inscricoes: p._count.userAtividade,
-            presenca: false,
-            tipo_atividade: p.tipo_atividade
+            id: item.uuid_atividade,
+            name: item.nome,
+            max_participants: item.max_participants,
+            inscricoes: item._count.userAtividade,
+            tipo_atividade: item.tipo_atividade
           }
         })
 

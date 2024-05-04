@@ -1,15 +1,18 @@
 import { useForm } from 'react-hook-form';
 import logo from './../../assets/images/logo.png';
 import AuthContext from '../../context/Auth/AuthContext';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Eye, EyeSlash } from '@phosphor-icons/react';
 
 const LoginForm = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
+  const [ passwordVisibility, setPasswordVisibility ] = useState(false)
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
+    console.log(data)
     await login(data);
     navigate("/")
   };
@@ -36,10 +39,10 @@ const LoginForm = () => {
             )}
           </div>
 
-          <div className="mb-6">
+          <div className="mb-6 relative">
             <label htmlFor="senha" className="block text-gray-700 font-bold mb-2">Senha</label>
             <input
-              type="password"
+              type={passwordVisibility ? "text" : "password"}
               id="senha"
               {...register("senha", { required: "A senha é obrigatória" })}
               className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
@@ -47,6 +50,11 @@ const LoginForm = () => {
               }`}
               placeholder="Sua senha"
             />
+            <button onClick={() => setPasswordVisibility(!passwordVisibility)} className="absolute right-4 top-[42px] text-black" type="button">
+              {
+                passwordVisibility ? <EyeSlash size={24} /> : <Eye size={24} />
+              }
+            </button>
             {errors.senha && (
               <p className="text-red-500 text-xs mt-1">{errors.senha.message}</p>
             )}
