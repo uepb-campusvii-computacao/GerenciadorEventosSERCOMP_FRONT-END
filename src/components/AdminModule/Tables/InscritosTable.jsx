@@ -1,10 +1,10 @@
-import { MagnifyingGlass } from "@phosphor-icons/react";
+import { DownloadSimple, MagnifyingGlass } from "@phosphor-icons/react";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import * as XLSX from 'xlsx';
-import paths from "../../../paths.js";
-import Pagination from "../../ui/Pagination.jsx";
+import paths from "@/paths.js";
+import Pagination from "@/components/ui/Pagination.jsx";
 
 const InscritosTable = ({ data }) => {
   const [users, setUsers] = useState(data);
@@ -84,7 +84,7 @@ const InscritosTable = ({ data }) => {
 
   return (
     <div className="flex flex-col">
-      <div className="relative flex items-center w-full my-4">
+      <div className="relative flex items-center w-full my-4 gap-4">
         <input
           onChange={(e) => searchUser(e.target.value)}
           className="rounded-md bg-white px-3 py-2 text-gray-600 w-full pl-12"
@@ -96,10 +96,17 @@ const InscritosTable = ({ data }) => {
           color="#1d4ed8"
           size={24}
         />
+        <button
+          onClick={convertToExcel}
+          title="Exportar XLSX"
+          className="bg-green-500 text-white p-2 rounded-md"
+        >
+          <DownloadSimple size={28} />
+        </button>
       </div>
       <div className="w-full overflow-x-auto rounded-lg">
         <table className="w-full">
-          <thead className="bg-blue-950">
+          <thead className="bg-indigo-500">
             <tr>
               <th scope="col" className="hidden">
                 ID
@@ -187,14 +194,6 @@ const InscritosTable = ({ data }) => {
           />
         </div>
       )}
-      <div className="flex flex-col items-end w-full mt-3 mb-3">
-        <button
-          onClick={convertToExcel}
-          className="bg-green-500 text-white px-4 py-2 rounded-md"
-        >
-          Exportar XLSX
-        </button>
-      </div>
     </div>
   );
 };

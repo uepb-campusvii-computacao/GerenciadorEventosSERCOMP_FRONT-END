@@ -63,37 +63,37 @@ const AtividadesTable = ({ data }) => {
         <div className="w-full flex flex-col items-center justify-center sm:gap-12 gap-4 sm:flex-row sm:mb-8 mb-4">
           <button
             onClick={() => filtrarAtividades("MINICURSO")}
-            className={`hover:bg-blue-900 w-full sm:w-auto ${
+            className={`hover:bg-blue-900 w-full ${
               tipoAtividadeSelecionada === "MINICURSO"
-                ? "bg-blue-950"
-                : "bg-blue-800"
+                ? "bg-blue-900"
+                : "bg-indigo-500"
             } transition-colors font-bold text-3xl px-4 py-3 text-center rounded-md shadow-md`}
           >
-            Minucursos
+            Minicursos
           </button>
           <button
             onClick={() => filtrarAtividades("OFICINA")}
-            className={`hover:bg-blue-900 w-full sm:w-auto ${
+            className={`hover:bg-blue-900 w-full ${
               tipoAtividadeSelecionada === "OFICINA"
-                ? "bg-blue-950"
-                : "bg-blue-800"
+                ? "bg-blue-900"
+                : "bg-indigo-500"
             } transition-colors font-bold text-3xl px-4 py-3 text-center rounded-md shadow-md`}
           >
             Oficinas
           </button>
           <button
             onClick={() => filtrarAtividades("WORKSHOP")}
-            className={`hover:bg-blue-900 w-full sm:w-auto ${
+            className={`hover:bg-blue-900 w-full ${
               tipoAtividadeSelecionada === "WORKSHOP"
-                ? "bg-blue-950"
-                : "bg-blue-800"
+                ? "bg-blue-900"
+                : "bg-indigo-500"
             } transition-colors font-bold text-3xl px-4 py-3 text-center rounded-md shadow-md`}
           >
             Workshops
           </button>
         </div>
         <table className="w-full">
-          <thead className="bg-blue-950">
+          <thead className="bg-indigo-500">
             <tr>
               <th
                 scope="col"

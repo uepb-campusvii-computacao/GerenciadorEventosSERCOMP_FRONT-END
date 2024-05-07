@@ -1,11 +1,10 @@
-import AtividadesTable from "../../../components/AdminModule/Tables/AtividadesTable";
-import Title from "../../../components/Title/Title";
-
+import AtividadesTable from "@/components/AdminModule/Tables/AtividadesTable";
+import Title from "@/components/ui/Title";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import axiosInstance from "../../../axiosInstance";
-import EventContext from "../../../context/Event/EventContext";
-import Loading from "../../Loading/Loading";
+import axiosInstance from "@/axiosInstance";
+import EventContext from "@/context/Event/EventContext";
+import Loading from "@/pages/Loading/Loading";
 
 const getAtividadesDataEndpoint = (event_id) => {
   return `/admin/events/${event_id}/atividades`;
@@ -48,10 +47,10 @@ const AdminAtividades = () => {
         isLoading ? (
           <Loading />
         ) : (
-          <>
+          <div className="md:px-8">
             <Title title="Atividades"/>
             <AtividadesTable data={tableData} />
-          </>
+          </div>
         )
       }
     </>

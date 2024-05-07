@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import axiosInstance from "../../../axiosInstance";
-import CredenciamentoTable from "../../../components/AdminModule/Tables/CredenciamentoTable";
-import Title from "../../../components/Title/Title";
-import EventContext from "../../../context/Event/EventContext";
-import Loading from "../../Loading/Loading";
+import axiosInstance from "@/axiosInstance";
+import CredenciamentoTable from "@/components/AdminModule/Tables/CredenciamentoTable";
+import Title from "@/components/ui/Title";
+import EventContext from "@/context/Event/EventContext";
+import Loading from "@/pages/Loading/Loading";
 
 const inscricoesEndpoint = (id_evento) => {
   return `/admin/events/${id_evento}/inscricoes`;
@@ -49,12 +49,12 @@ const AdminCredenciamento = () => {
       {isLoading ? (
         <Loading />
       ) : (
-        <>
+        <div className="md:px-8">
           <Title title="Credenciamento" />
           <CredenciamentoTable
             data={tableData.filter((a) => a.paymentStatus === "REALIZADO")}
           />
-        </>
+        </div>
       )}
     </>
   );
