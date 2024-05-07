@@ -47,10 +47,10 @@ const AdminInscritosEvento = () => {
       {isLoading ? (
         <Loading />
       ) : (
-        <>
+        <div className="md:px-8">
           <Title title="Inscrições" />
           <InscritosTable data={tableData} />
-        </>
+        </div>
       )}
     </>
   );

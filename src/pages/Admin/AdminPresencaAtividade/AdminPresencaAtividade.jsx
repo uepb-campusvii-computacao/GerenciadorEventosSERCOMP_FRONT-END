@@ -40,10 +40,10 @@ const AdminPresencaAtividade = () => {
         isLoading ? (
           <Loading />
         ) : (          
-          <>
+          <div className="md:px-8">
             <Title title="Registrar Presença" />
             <PresencaTable data={data} atividadeId={id} />
-          </>
+          </div>
         )
       }
     </>

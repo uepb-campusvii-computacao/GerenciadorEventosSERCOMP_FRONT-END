@@ -47,10 +47,10 @@ const AdminAtividades = () => {
         isLoading ? (
           <Loading />
         ) : (
-          <>
+          <div className="md:px-8">
             <Title title="Atividades"/>
             <AtividadesTable data={tableData} />
-          </>
+          </div>
         )
       }
     </>

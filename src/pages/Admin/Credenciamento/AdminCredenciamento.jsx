@@ -49,12 +49,12 @@ const AdminCredenciamento = () => {
       {isLoading ? (
         <Loading />
       ) : (
-        <>
+        <div className="md:px-8">
           <Title title="Credenciamento" />
           <CredenciamentoTable
             data={tableData.filter((a) => a.paymentStatus === "REALIZADO")}
           />
-        </>
+        </div>
       )}
     </>
   );
