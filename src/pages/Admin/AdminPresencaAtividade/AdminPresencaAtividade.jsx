@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axiosInstance from "../../../axiosInstance";
-import PresencaTable from "../../../components/AdminModule/Tables/PresencaTable";
-import Title from "../../../components/Title/Title";
-import Loading from "../../Loading/Loading";
+import axiosInstance from "@/axiosInstance";
+import PresencaTable from "@/components/AdminModule/Tables/PresencaTable";
+import Title from "@/components/ui/Title";
+import Loading from "@/pages/Loading/Loading";
 
 const AdminPresencaAtividade = () => {
   const { id } = useParams();

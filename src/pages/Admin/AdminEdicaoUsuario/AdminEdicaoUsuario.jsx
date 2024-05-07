@@ -3,12 +3,12 @@ import { useForm } from "react-hook-form";
 import { FaSpinner } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import axiosInstance from "../../../axiosInstance";
-import Title from "../../../components/Title/Title";
-import EventContext from "../../../context/Event/EventContext";
-import Loading from "../../Loading/Loading";
+import axiosInstance from "@/axiosInstance";
+import Title from "@/components/ui/Title";
+import EventContext from "@/context/Event/EventContext";
+import Loading from "@/pages/Loading/Loading";
 import { Trash } from "@phosphor-icons/react";
-import Modal from "../../../components/ui/Modal";
+import Modal from "@/components/ui/Modal";
 
 const deleteUserDataEndpoint = (user_id) => {
   return `/admin/user/${user_id}`

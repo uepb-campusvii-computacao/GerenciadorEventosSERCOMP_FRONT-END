@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
-import logo from './../../assets/images/logo.png';
-import AuthContext from '../../context/Auth/AuthContext';
+import logo from '@/assets/images/logo.png';
+import AuthContext from '@/context/Auth/AuthContext';
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeSlash } from '@phosphor-icons/react';
