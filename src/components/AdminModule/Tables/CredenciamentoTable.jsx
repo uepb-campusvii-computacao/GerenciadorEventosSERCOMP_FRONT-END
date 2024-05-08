@@ -1,12 +1,12 @@
-import { DownloadSimple, MagnifyingGlass } from "@phosphor-icons/react";
+import { DownloadSimple, Funnel, MagnifyingGlass } from "@phosphor-icons/react";
 import PropTypes from "prop-types";
 import { useContext, useState } from "react";
 import { toast } from "react-toastify";
-import * as XLSX from 'xlsx';
-import { BACKEND_DEFAULT_URL } from "../../../backendPaths.js";
-import EventContext from "../../../context/Event/EventContext.jsx";
-import Pagination from "../../ui/Pagination.jsx";
-import axiosInstance from "./../../../axiosInstance.js";
+import * as XLSX from "xlsx";
+import { BACKEND_DEFAULT_URL } from "@/backendPaths.js";
+import EventContext from "@/context/Event/EventContext.jsx";
+import Pagination from "@/components/ui/Pagination.jsx";
+import axiosInstance from "@/axiosInstance.js";
 
 const toggleCredenciamentoEndpoint = (id_evento, user_id) => {
   return `${BACKEND_DEFAULT_URL}/admin/events/${id_evento}/inscricoes/credenciamento/${user_id}`;
@@ -57,11 +57,10 @@ const CredenciamentoTable = ({ data }) => {
       Credenciamento: item.credential ? "Sim" : "Não",
     }));
 
-    
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.json_to_sheet(excelData);
 
-    worksheet['!cols'] = [
+    worksheet["!cols"] = [
       { wch: 40 },
       { wch: 40 },
       { wch: 30 },
@@ -69,14 +68,17 @@ const CredenciamentoTable = ({ data }) => {
       { wch: 20 },
     ];
 
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Dados');
-  
-    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-  
-    const blob = new Blob([excelBuffer], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8',
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Dados");
+
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
     });
-  
+
+    const blob = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8",
+    });
+
     const link = document.createElement("a");
     link.href = window.URL.createObjectURL(blob);
     link.setAttribute("download", "Credenciamento.xlsx");
@@ -156,29 +158,28 @@ const CredenciamentoTable = ({ data }) => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {currentUsers
-              .map((item) => (
-                <tr key={item.id}>
-                  <td className="hidden">{item.id}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-black text-center">
-                    {item.name}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-black text-center">
-                    {item.nome_cracha}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-black text-center">
-                    {item.email}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-black text-center">
-                    <input
-                      type="checkbox"
-                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                      defaultChecked={item.credential}
-                      onClick={(ref) => toggleCredential(item.id, ref)}
-                    />
-                  </td>
-                </tr>
-              ))}
+            {currentUsers.map((item) => (
+              <tr key={item.id}>
+                <td className="hidden">{item.id}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-black text-center">
+                  {item.name}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-black text-center">
+                  {item.nome_cracha}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-black text-center">
+                  {item.email}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-black text-center">
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                    defaultChecked={item.credential}
+                    onClick={(ref) => toggleCredential(item.id, ref)}
+                  />
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
