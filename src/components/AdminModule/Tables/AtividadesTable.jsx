@@ -1,28 +1,57 @@
 import PropTypes from "prop-types";
 import { FaSearch } from "react-icons/fa";
-import * as XLSX from 'xlsx';
+import * as XLSX from "xlsx";
 import paths from "../../../paths.js";
+import { useEffect, useState } from "react";
 
 const AtividadesTable = ({ data }) => {
+  const [atividadesExibidas, setAtividadesExibidas] = useState(data);
+  const [tipoAtividadeSelecionada, setTipoAtividadeSelecionada] =
+    useState(null);
+
+  function filtrarAtividades(tipoAtividade) {
+    const atividadesFiltradas = data.filter(
+      (atividade) => atividade.tipo_atividade === tipoAtividade
+    );
+
+    setAtividadesExibidas(atividadesFiltradas);
+    setTipoAtividadeSelecionada(tipoAtividade);
+  }
+
+  useEffect(() => {
+    filtrarAtividades("MINICURSO");
+  }, []);
+
   const convertToXLSX = () => {
-    const excelData = data.map((item) => ({
+    const excelData = atividadesExibidas.map((item) => ({
       Atividade: item.name,
       Inscricoes: item.inscricoes || 0,
+      Vagas: item.max_participants || 0,
     }));
-  
+
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.json_to_sheet(excelData);
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Inscrições');
-  
-    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-  
-    const blob = new Blob([excelBuffer], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8',
+
+    worksheet['!cols'] = [
+      { wch: 70 }, // Largura da coluna para 'Atividade'
+      { wch: 10 }, // Largura da coluna para 'Inscricoes'
+      { wch: 10 }, // Largura da coluna para 'Vagas'
+    ];
+
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Inscrições");
+
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
     });
-  
+
+    const blob = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8",
+    });
+
     const link = document.createElement("a");
     link.href = window.URL.createObjectURL(blob);
-    link.setAttribute("download", "Atividades.xlsx");
+    link.setAttribute("download", `${tipoAtividadeSelecionada}S.xlsx`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -31,8 +60,40 @@ const AtividadesTable = ({ data }) => {
   return (
     <div className="flex flex-col">
       <div className="w-full overflow-x-auto rounded-lg">
+        <div className="w-full flex flex-col items-center justify-center sm:gap-12 gap-4 sm:flex-row sm:mb-8 mb-4">
+          <button
+            onClick={() => filtrarAtividades("MINICURSO")}
+            className={`hover:bg-blue-900 w-full ${
+              tipoAtividadeSelecionada === "MINICURSO"
+                ? "bg-blue-900"
+                : "bg-indigo-500"
+            } transition-colors font-bold text-3xl px-4 py-3 text-center rounded-md shadow-md`}
+          >
+            Minicursos
+          </button>
+          <button
+            onClick={() => filtrarAtividades("OFICINA")}
+            className={`hover:bg-blue-900 w-full ${
+              tipoAtividadeSelecionada === "OFICINA"
+                ? "bg-blue-900"
+                : "bg-indigo-500"
+            } transition-colors font-bold text-3xl px-4 py-3 text-center rounded-md shadow-md`}
+          >
+            Oficinas
+          </button>
+          <button
+            onClick={() => filtrarAtividades("WORKSHOP")}
+            className={`hover:bg-blue-900 w-full ${
+              tipoAtividadeSelecionada === "WORKSHOP"
+                ? "bg-blue-900"
+                : "bg-indigo-500"
+            } transition-colors font-bold text-3xl px-4 py-3 text-center rounded-md shadow-md`}
+          >
+            Workshops
+          </button>
+        </div>
         <table className="w-full">
-          <thead className="bg-blue-950">
+          <thead className="bg-indigo-500">
             <tr>
               <th
                 scope="col"
@@ -44,7 +105,7 @@ const AtividadesTable = ({ data }) => {
                 scope="col"
                 className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider"
               >
-                Inscrições
+                Vagas
               </th>
               <th
                 scope="col"
@@ -55,13 +116,13 @@ const AtividadesTable = ({ data }) => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {data.map((item) => (
+            {atividadesExibidas.map((item) => (
               <tr key={item.id}>
                 <td className="px-6 py-4 whitespace-nowrap text-black text-center">
                   {item.name}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-black text-center">
-                  {item.inscricoes}
+                  {`${item.inscricoes}/${item.max_participants}`}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-black text-center flex items-center flex-col">
                   <a

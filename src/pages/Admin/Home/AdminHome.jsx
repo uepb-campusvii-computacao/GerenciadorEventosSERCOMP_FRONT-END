@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { FaExclamation, FaMoneyBillWave, FaUser } from "react-icons/fa";
+import { FaExclamation, FaMoneyBillWave, FaUnlock, FaUser } from "react-icons/fa";
 import { toast } from "react-toastify";
 import axiosInstance from "../../../axiosInstance";
 import { BACKEND_DEFAULT_URL } from "../../../backendPaths";
@@ -13,6 +13,7 @@ const AdminHome = () => {
     totalInscritos: 0,
     totalArrecadado: 0,
     inscricoesPendentes: 0,
+    inscricoesGratuitas: 0,
   });
   const { events } = useContext(EventContext);
 
@@ -28,6 +29,7 @@ const AdminHome = () => {
           totalInscritos: data.total_inscritos,
           totalArrecadado: data.total_arrecadado,
           inscricoesPendentes: data.inscricoes_pendentes,
+          inscricoesGratuitas: data.inscricoes_gratuitas,
         });
       } catch (error) {
         console.error("Erro ao buscar dados financeiros:", error);
@@ -71,6 +73,12 @@ const AdminHome = () => {
               bgColor="bg-orange-400"
               title="Inscrições pendentes"
               value={financialData.inscricoesPendentes.toString()}
+            />
+            <InfoCard
+              icon={<FaUnlock className="h-12 w-12 text-white" />}
+              bgColor="bg-gray-400"
+              title="Inscrições gratuitas"
+              value={financialData.inscricoesGratuitas.toString()}
             />
           </div>
         )

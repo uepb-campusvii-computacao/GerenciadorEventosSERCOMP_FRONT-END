@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import axiosInstance from "../../../axiosInstance";
-import InscritosTable from "../../../components/AdminModule/Tables/InscritosTable";
-import Title from "../../../components/Title/Title";
-import EventContext from "../../../context/Event/EventContext";
-import Loading from "../../Loading/Loading";
+import axiosInstance from "@/axiosInstance";
+import InscritosTable from "@/components/AdminModule/Tables/InscritosTable";
+import Title from "@/components/ui/Title";
+import EventContext from "@/context/Event/EventContext";
+import Loading from "@/pages/Loading/Loading";
 
 const inscricoesEndpoint = (id_evento) => {
   return `/admin/events/${id_evento}/inscricoes`;
@@ -20,13 +20,14 @@ const AdminInscritosEvento = () => {
       try {
         const { data } = await axiosInstance.get(inscricoesEndpoint(events[0].uuid_evento))
 
-        const mappedResponse = data.all_subscribers.map((p) => {
+        const mappedResponse = data.all_subscribers.map((item) => {
           return {
-            id: p.uuid_user,
-            name: p.nome,
-            email: p.email,
-            paymentStatus: p.status_pagamento,
-            credential: p.credenciamento,
+            id: item.uuid_user,
+            name: item.nome,
+            email: item.email,
+            nome_cracha:item.nome_cracha,
+            paymentStatus: item.status_pagamento,
+            credential: item.credenciamento,
           };
         });
 
@@ -46,10 +47,10 @@ const AdminInscritosEvento = () => {
       {isLoading ? (
         <Loading />
       ) : (
-        <>
+        <div className="md:px-8">
           <Title title="Inscrições" />
           <InscritosTable data={tableData} />
-        </>
+        </div>
       )}
     </>
   );
