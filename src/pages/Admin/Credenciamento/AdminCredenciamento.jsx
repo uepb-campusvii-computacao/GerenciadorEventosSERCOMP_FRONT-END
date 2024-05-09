@@ -49,7 +49,7 @@ const AdminCredenciamento = () => {
       {isLoading ? (
         <Loading />
       ) : (
-        <div className="md:px-8">
+        <div className="md:px-8 pb-8">
           <Title title="Credenciamento" />
           <CredenciamentoTable
             data={tableData.filter((item) => item.paymentStatus === "REALIZADO" || item.paymentStatus === "GRATUITO")}
