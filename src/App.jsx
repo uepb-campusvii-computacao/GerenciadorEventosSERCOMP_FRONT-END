@@ -15,6 +15,7 @@ import LoginForm from "./pages/Login/LoginForm";
 import AdminEdicaoAtividade from "./pages/Admin/AdminEdicaoAtividade/AdminEdicaoAtividade";
 import AdminLoja from "./pages/Admin/Loja/AdminLoja";
 import AdminEdicaoProduto from "./pages/Admin/AdminEdicaoProduto/AdminEdicaoProduto";
+import AdminCompradores from "./pages/Admin/Loja/AdminCompradores";
 
 const App = () => {
   return (
@@ -35,7 +36,7 @@ const App = () => {
               <Route exact path="/atividades/editar/:atividade_id" element={<AdminEdicaoAtividade />} />
               <Route exact path="/loja" element={<AdminLoja />} />
               <Route exact path="/loja/produto/:produto_id/editar" element={<AdminEdicaoProduto />} />
-              <Route exact path="/loja/compras/:produto_id" element={<AdminLoja />} />
+              <Route exact path="/loja/compras/:produto_id" element={<AdminCompradores />} />
             </Route>
           </Route>
         </Routes>
