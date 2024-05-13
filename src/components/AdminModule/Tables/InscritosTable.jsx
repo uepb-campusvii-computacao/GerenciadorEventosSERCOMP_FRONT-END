@@ -232,7 +232,7 @@ const InscritosTable = ({ data }) => {
             {currentUsers.map((item) => (
               <tr key={item.id}>
                 <td className="hidden">{item.id}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-black text-center">
+                <td className={`px-6 py-4 whitespace-nowrap ${item.cor_texto} text-center`}>
                   {item.name}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-black text-center">
