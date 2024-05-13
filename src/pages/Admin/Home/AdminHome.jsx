@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import { FaExclamation, FaMoneyBillWave, FaUnlock, FaUser } from "react-icons/fa";
 import { toast } from "react-toastify";
-import axiosInstance from "../../../axiosInstance";
-import { BACKEND_DEFAULT_URL } from "../../../backendPaths";
-import InfoCard from "../../../components/AdminModule/InfoCard/InfoCard";
-import EventContext from "../../../context/Event/EventContext";
-import Loading from "../../Loading/Loading";
+import axiosInstance from "@/axiosInstance";
+import { BACKEND_DEFAULT_URL } from "@/backendPaths";
+import InfoCard from "@/components/AdminModule/Cards/InfoCard";
+import EventContext from "@/context/Event/EventContext";
+import Loading from "@/pages/Loading/Loading";
 
 const AdminHome = () => {
   const [isLoading, setIsLoading] = useState(true);

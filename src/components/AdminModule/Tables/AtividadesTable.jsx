@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { FaSearch } from "react-icons/fa";
+import { FaEdit, FaSearch } from "react-icons/fa";
 import * as XLSX from "xlsx";
 import paths from "../../../paths.js";
 import { useEffect, useState } from "react";
@@ -113,6 +113,12 @@ const AtividadesTable = ({ data }) => {
               >
                 Lista de Presença
               </th>
+              <th
+                scope="col"
+                className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider"
+              >
+                Ações
+              </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -124,12 +130,20 @@ const AtividadesTable = ({ data }) => {
                 <td className="px-6 py-4 whitespace-nowrap text-black text-center">
                   {`${item.inscricoes}/${item.max_participants}`}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-black text-center flex items-center flex-col">
+                <td className="px-6 py-4 whitespace-nowrap text-black text-center flex flex-col justify-center items-center">
                   <a
                     href={`${paths.atividades}/${item.id}`}
-                    className="text-blue-500 hover:text-blue-700"
+                    className="text-blue-500 hover:text-blue-700 pt-2"
                   >
                     <FaSearch className="w-12" />
+                  </a>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-black text-center">
+                  <a
+                    href={`${paths.atividades}/editar/${item.id}`}
+                    className="text-blue-500 hover:text-blue-700"
+                  >
+                    <FaEdit className="w-12" />
                   </a>
                 </td>
               </tr>

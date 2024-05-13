@@ -12,6 +12,9 @@ import AdminAtividades from "./pages/Admin/Atividades/AdminAtividades";
 import AdminCredenciamento from "./pages/Admin/Credenciamento/AdminCredenciamento";
 import AdminHome from "./pages/Admin/Home/AdminHome";
 import LoginForm from "./pages/Login/LoginForm";
+import AdminEdicaoAtividade from "./pages/Admin/AdminEdicaoAtividade/AdminEdicaoAtividade";
+import AdminLoja from "./pages/Admin/Loja/AdminLoja";
+import AdminEdicaoProduto from "./pages/Admin/AdminEdicaoProduto/AdminEdicaoProduto";
 
 const App = () => {
   return (
@@ -29,6 +32,10 @@ const App = () => {
               <Route exact path="/atividades" element={<AdminAtividades />} />
               <Route exact path="/participante/editar/:user_id" element={<AdminEdicaoUsuario />} />
               <Route exact path="/atividades/:id" element={<AdminPresencaAtividade />} />
+              <Route exact path="/atividades/editar/:atividade_id" element={<AdminEdicaoAtividade />} />
+              <Route exact path="/loja" element={<AdminLoja />} />
+              <Route exact path="/loja/produto/:produto_id/editar" element={<AdminEdicaoProduto />} />
+              <Route exact path="/loja/compras/:produto_id" element={<AdminLoja />} />
             </Route>
           </Route>
         </Routes>
