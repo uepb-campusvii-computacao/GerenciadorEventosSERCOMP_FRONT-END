@@ -27,13 +27,11 @@ const AdminCompradores = () => {
             uuid_user: item.uuid_user,
             nome: item.nome,
             email: item.email,
-
           };
         });
 
         setTableData(mappedResponse);
 
-        console.log(tableData);
       } catch (error) {
         console.error("Erro ao buscar inscritos:", error);
         toast.error("Erro ao buscar inscritos.");
@@ -44,10 +42,18 @@ const AdminCompradores = () => {
     fetchData();
   }, []);
   return (
-    <div className="py-8">
-      <Title title={"Compradores"} />
-      <CompradoresTable data={tableData}/>
-    </div>
+    <>
+      {tableData.length === 0 ? (
+        <div className="flex w-full h-[90vh] items-center justify-center">
+          <Title title={"Nenhuma compra foi realizada"} />
+        </div>
+      ) : (
+        <div className="py-8">
+          <Title title={"Compradores"} />
+          <CompradoresTable data={tableData} produto_id={produto_id} />
+        </div>
+      )}
+    </>
   );
 };
 

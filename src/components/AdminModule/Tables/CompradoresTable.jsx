@@ -5,9 +5,7 @@ import * as XLSX from "xlsx";
 import paths from "@/paths.js";
 import Pagination from "@/components/ui/Pagination.jsx";
 
-
-
-const CompradoresTable = ({ data }) => {
+const CompradoresTable = ({ data, produto_id }) => {
   const [users, setUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 20;
@@ -142,7 +140,7 @@ const CompradoresTable = ({ data }) => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-black text-center">
                   <a
-                    href={`${paths.participante}/editar/${item.uuid_user}`}
+                    href={`${paths.loja}/usuario/${item.uuid_user}/compras/${produto_id}`}
                     className="text-blue-500 hover:text-blue-700 w-full flex items-center justify-center"
                   >
                     <MagnifyingGlass size={32} />
