@@ -1,8 +1,9 @@
 import PropTypes from "prop-types";
 import { FaAddressCard, FaHome, FaUserEdit } from "react-icons/fa";
 import { FaUserGroup } from "react-icons/fa6";
-import logo from "../../../assets/images/logo.png";
-import paths from "../../../paths.js";
+import { FaShoppingCart } from "react-icons/fa";
+import logo from "@/assets/images/logo.png";
+import paths from "@/paths.js";
 
 const SidebarItem = ({ nome, link, icon }) => {
   return (
@@ -52,6 +53,13 @@ const Sidebar = ({ sidebarOpen }) => {
               nome="Atividades"
               link={paths.atividades}
               icon={<FaUserGroup className="w-6 h-6 mr-2 -mt-1" />}
+            />
+          </li>
+          <li className="mb-2 rounded hover:shadow">
+            <SidebarItem 
+              nome="Loja"
+              link={paths.loja}
+              icon={<FaShoppingCart className="w-6 h-6 mr-2 -mt-1" />}
             />
           </li>
         </ul>
