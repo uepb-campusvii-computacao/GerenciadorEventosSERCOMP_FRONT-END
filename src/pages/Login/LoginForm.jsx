@@ -1,9 +1,9 @@
-import { useForm } from 'react-hook-form';
 import logo from '@/assets/images/logo.png';
 import AuthContext from '@/context/Auth/AuthContext';
-import { useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Eye, EyeSlash } from '@phosphor-icons/react';
+import { useContext, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -12,7 +12,6 @@ const LoginForm = () => {
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
-    console.log(data)
     await login(data);
     navigate("/")
   };
