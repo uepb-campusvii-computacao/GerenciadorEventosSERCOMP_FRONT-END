@@ -14,7 +14,6 @@ const AdminInscritosEvento = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { events } = useContext(EventContext);
   const [tableData, setTableData] = useState([]);
-  const [lotes, setLotes] = useState([]);
 
   async function fetchData(events, setTableData, setIsLoading) {
     setIsLoading(true);
@@ -24,9 +23,9 @@ const AdminInscritosEvento = () => {
       
       const uuid_lotes = inscricoesResponse.data.all_subscribers.map((item) => (item.uuid_lote));
 
-      setLotes([...new Set(uuid_lotes)]);
+      const lotes = [...new Set(uuid_lotes)];
       
-      const coresMap = gerarMapaDeCores();
+      const coresMap = gerarMapaDeCores(lotes);
       
       const mappedResponse = inscricoesResponse.data.all_subscribers.map((item) => {
         const cor_texto = gerarCorTexto(item.uuid_lote, coresMap);
@@ -50,13 +49,12 @@ const AdminInscritosEvento = () => {
     }
   }
   
-  function gerarMapaDeCores() {
+  function gerarMapaDeCores(lotes) {
     const cores = ['text-black', 'text-green-500', 'text-red-500', 'text-blue-500', 'text-yellow-500']; // Adicione mais cores conforme necessário
     const coresMap = {};
     lotes.forEach((lote, index) => {
       coresMap[lote] = cores[index % cores.length];
     });
-
     return coresMap;
   }
   
