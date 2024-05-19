@@ -4,7 +4,8 @@ const paths = {
     atividades: "/atividades",
     credenciamento: "/credenciamento",
     inscritos: "/inscritos",
-    home: "/"
+    home: "/",
+    sorteio_inscritos: "/inscritos/sorteio"
 }
 
 export default paths;

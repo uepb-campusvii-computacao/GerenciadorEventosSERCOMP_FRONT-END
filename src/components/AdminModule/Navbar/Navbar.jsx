@@ -1,7 +1,7 @@
+import AuthContext from "@/context/Auth/AuthContext";
 import PropTypes from "prop-types";
 import { useContext } from "react";
 import { FaBars } from "react-icons/fa";
-import AuthContext from "../../../context/Auth/AuthContext";
 
 const Navbar = ({sidebarOpen, setSidebarOpen}) => {
   const { logout } = useContext(AuthContext);
