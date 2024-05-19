@@ -1,7 +1,10 @@
-import Navbar from '../Navbar/Navbar'
-import PropTypes from "prop-types";
+import SidebarContext from "@/context/Sidebar/SidebarContext";
+import { useContext } from 'react';
+import Navbar from '../Navbar/Navbar';
 
-const Dashboard = ({sidebarOpen, setSidebarOpen}) => {
+const Dashboard = () => {
+  const { sidebarOpen, setSidebarOpen } = useContext(SidebarContext);
+
   return (
     <div className={`w-full`}>
       <Navbar 
@@ -11,10 +14,4 @@ const Dashboard = ({sidebarOpen, setSidebarOpen}) => {
     </div>
   )
 }
-
-Dashboard.propTypes = {
-  sidebarOpen: PropTypes.bool.isRequired,
-  setSidebarOpen: PropTypes.func.isRequired,
-};
-
 export default Dashboard

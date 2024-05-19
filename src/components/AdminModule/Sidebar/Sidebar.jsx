@@ -1,9 +1,10 @@
-import PropTypes from "prop-types";
-import { FaAddressCard, FaHome, FaUserEdit } from "react-icons/fa";
-import { FaUserGroup } from "react-icons/fa6";
-import { FaShoppingCart } from "react-icons/fa";
 import logo from "@/assets/images/logo.png";
+import SidebarContext from "@/context/Sidebar/SidebarContext";
 import paths from "@/paths.js";
+import PropTypes from "prop-types";
+import { useContext } from "react";
+import { FaAddressCard, FaGift, FaHome, FaShoppingCart, FaUserEdit } from "react-icons/fa";
+import { FaUserGroup } from "react-icons/fa6";
 
 const SidebarItem = ({ nome, link, icon }) => {
   return (
@@ -14,7 +15,9 @@ const SidebarItem = ({ nome, link, icon }) => {
   );
 };
 
-const Sidebar = ({ sidebarOpen }) => {
+const Sidebar = () => {
+  const { sidebarOpen } = useContext(SidebarContext)
+
   return (
     <div
       className={`${
@@ -50,6 +53,13 @@ const Sidebar = ({ sidebarOpen }) => {
           </li>
           <li className="mb-2 rounded hover:shadow">
             <SidebarItem 
+              nome="Sorteio Inscritos"
+              link={paths.sorteio_inscritos}
+              icon={<FaGift className="w-6 h-6 mr-2 -mt-1" />}
+            />
+          </li>
+          <li className="mb-2 rounded hover:shadow">
+            <SidebarItem 
               nome="Atividades"
               link={paths.atividades}
               icon={<FaUserGroup className="w-6 h-6 mr-2 -mt-1" />}
@@ -72,10 +82,6 @@ SidebarItem.propTypes = {
   nome: PropTypes.string.isRequired,
   link: PropTypes.string.isRequired,
   icon: PropTypes.node.isRequired,
-};
-
-Sidebar.propTypes = {
-  sidebarOpen: PropTypes.bool.isRequired,
 };
 
 export default Sidebar;
