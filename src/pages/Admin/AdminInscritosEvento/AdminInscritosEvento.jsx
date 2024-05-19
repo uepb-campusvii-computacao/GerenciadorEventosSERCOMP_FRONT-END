@@ -10,10 +10,6 @@ const inscricoesEndpoint = (id_evento) => {
   return `/admin/events/${id_evento}/inscricoes`;
 };
 
-const lotesEndpoit = (id_evento) => {
-  return `/events/${id_evento}/lotes`;
-}
-
 const AdminInscritosEvento = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { events } = useContext(EventContext);
@@ -24,9 +20,10 @@ const AdminInscritosEvento = () => {
     
     try {
       const inscricoesResponse = await axiosInstance.get(inscricoesEndpoint(events[0].uuid_evento));
-      const lotesResponse = await axiosInstance.get(lotesEndpoit(events[0].uuid_evento));
-  
-      const lotes = lotesResponse.data;
+      
+      const uuid_lotes = inscricoesResponse.data.all_subscribers.map((item) => (item.uuid_lote));
+
+      const lotes = [...new Set(uuid_lotes)];
       
       const coresMap = gerarMapaDeCores(lotes);
       
@@ -56,9 +53,8 @@ const AdminInscritosEvento = () => {
     const cores = ['text-black', 'text-green-500', 'text-red-500', 'text-blue-500', 'text-yellow-500']; // Adicione mais cores conforme necessário
     const coresMap = {};
     lotes.forEach((lote, index) => {
-      coresMap[lote.uuid_lote] = cores[index % cores.length];
+      coresMap[lote] = cores[index % cores.length];
     });
-    console.log(coresMap)
     return coresMap;
   }
   

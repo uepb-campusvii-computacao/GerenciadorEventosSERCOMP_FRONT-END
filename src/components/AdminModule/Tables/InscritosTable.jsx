@@ -179,6 +179,23 @@ const InscritosTable = ({ data }) => {
               />
               <span>GRATUITO</span>
             </label>
+            <label
+              htmlFor="expirado"
+              className={`bg-gray-200 px-3 py-2 text-sm rounded-md hover:bg-gray-400 transition-colors ${
+                filter === "GRATUITO" && "bg-gray-400"
+              }`}
+            >
+              <input
+                onChange={(e) => toggleFilter(e.target.value)}
+                value="EXPIRADO"
+                checked={filter === "expirado"}
+                className="hidden"
+                type="checkbox"
+                name=""
+                id="expirado"
+              />
+              <span>EXPIRADO</span>
+            </label>
           </div>
         </Popover>
         <button
