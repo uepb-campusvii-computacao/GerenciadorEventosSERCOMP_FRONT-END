@@ -2,11 +2,12 @@ import axiosInstance from "@/axiosInstance.js";
 import { BACKEND_DEFAULT_URL } from "@/backendPaths.js";
 import Pagination from "@/components/ui/Pagination.jsx";
 import EventContext from "@/context/Event/EventContext.jsx";
-import { DownloadSimple, MagnifyingGlass } from "@phosphor-icons/react";
+import { DownloadSimple, Funnel, MagnifyingGlass } from "@phosphor-icons/react";
 import PropTypes from "prop-types";
 import { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import * as XLSX from "xlsx";
+import Popover from "../../ui/Popover";
 
 const toggleCredenciamentoEndpoint = (id_evento, user_id) => {
   return `${BACKEND_DEFAULT_URL}/admin/events/${id_evento}/inscricoes/credenciamento/${user_id}`;
