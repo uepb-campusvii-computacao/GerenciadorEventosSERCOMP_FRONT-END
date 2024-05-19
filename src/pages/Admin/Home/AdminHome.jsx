@@ -1,12 +1,12 @@
 import axiosInstance from "@/axiosInstance";
 import { BACKEND_DEFAULT_URL } from "@/backendPaths";
 import InfoCard from "@/components/AdminModule/Cards/InfoCard";
+import PieChart from "@/components/ui/charts/PieChart/PieChart";
 import EventContext from "@/context/Event/EventContext";
 import Loading from "@/pages/Loading/Loading";
 import { useContext, useEffect, useState } from "react";
 import { FaMoneyBillWave, FaUser } from "react-icons/fa";
 import { toast } from "react-toastify";
-import PieChart from "../../../components/ui/charts/PieChart/PieChart";
 
 const AdminHome = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -90,7 +90,7 @@ const AdminHome = () => {
                 }
               />
             </div>
-            <div className="lg:flex gap-4 px-6 mt-4 mb-8 sm:flex-row">
+            <div className="sm:flex lg:flex-row px-6 mt-4 mb-8 sm:flex-col gap-4">
               <PieChart 
                 title={"INSCRIÇÕES REALIZADAS"} 
                 data={[
@@ -100,6 +100,7 @@ const AdminHome = () => {
                 ]}
                 total={financialData.totalInscritos}
               />
+              <div className="h-4"/>{/* Gap não funciona no Mobile */}
               <PieChart 
                 title={"INSCRITOS CREDENCIADOS"} 
                 data={[
