@@ -20,6 +20,10 @@ const CredenciamentoTable = ({ data }) => {
 
   const [usersPerPage] = useState(20);
 
+  const [filterOpen, setFilterOpen] = useState(false);
+
+  const [filter, setFilter] = useState("");
+
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
   const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
@@ -54,6 +58,7 @@ const CredenciamentoTable = ({ data }) => {
       Nome: item.name,
       "Nome no crachá": item.nome_cracha,
       Email: item.email,
+      Pagamento: item.paymentStatus,
       Credenciamento: item.credential ? "Sim" : "Não",
     }));
 
@@ -65,6 +70,7 @@ const CredenciamentoTable = ({ data }) => {
       { wch: 40 },
       { wch: 30 },
       { wch: 40 },
+      { wch: 20 },
       { wch: 20 },
     ];
 
@@ -86,6 +92,16 @@ const CredenciamentoTable = ({ data }) => {
     link.click();
     document.body.removeChild(link);
   };
+
+  function toggleFilter(value) {
+    if (filter === value) {
+      setFilter("");
+      setUsers(data);
+    } else {
+      setFilter(value);
+      setUsers(data.filter((item) => item.paymentStatus === value));
+    }
+  }
 
   const toggleCredential = async (user_id, { target }) => {
     target.disabled = true;
@@ -116,6 +132,48 @@ const CredenciamentoTable = ({ data }) => {
           color="#1d4ed8"
           size={24}
         />
+        <Popover
+          open={filterOpen}
+          togglePopover={() => setFilterOpen(!filterOpen)}
+          icon={<Funnel size={28} />}
+        >
+          <div className="text-black flex flex-col gap-2">
+            <label
+              htmlFor="realizado"
+              className={`bg-gray-200 px-3 py-2 text-sm rounded-md hover:bg-gray-400 transition-colors ${
+                filter === "REALIZADO" && "bg-gray-400"
+              }`}
+            >
+              <input
+                onChange={(e) => toggleFilter(e.target.value)}
+                value="REALIZADO"
+                checked={filter === "REALIZADO"}
+                className="hidden"
+                type="checkbox"
+                name=""
+                id="realizado"
+              />
+              <span>REALIZADO</span>
+            </label>
+            <label
+              htmlFor="gratuito"
+              className={`bg-gray-200 px-3 py-2 text-sm rounded-md hover:bg-gray-400 transition-colors ${
+                filter === "GRATUITO" && "bg-gray-400"
+              }`}
+            >
+              <input
+                onChange={(e) => toggleFilter(e.target.value)}
+                value="GRATUITO"
+                checked={filter === "gratuito"}
+                className="hidden"
+                type="checkbox"
+                name=""
+                id="gratuito"
+              />
+              <span>GRATUITO</span>
+            </label>
+          </div>
+        </Popover>
         <button
           onClick={convertToExcel}
           title="Exportar XLSX"
@@ -153,6 +211,12 @@ const CredenciamentoTable = ({ data }) => {
                 scope="col"
                 className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider"
               >
+                Status
+              </th>
+              <th
+                scope="col"
+                className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider"
+              >
                 Credenciamento
               </th>
             </tr>
@@ -161,7 +225,10 @@ const CredenciamentoTable = ({ data }) => {
             {currentUsers.map((item) => (
               <tr key={item.id}>
                 <td className="hidden">{item.id}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-black text-center">
+                <td
+                title={item.email}
+                  className={`px-6 py-4 whitespace-nowrap text-black text-center`}
+                >
                   {item.name}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-black text-center">
@@ -169,6 +236,21 @@ const CredenciamentoTable = ({ data }) => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-black text-center">
                   {item.email}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-black text-center flex justify-center">
+                  {item.paymentStatus === "REALIZADO" ? (
+                    <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
+                      {item.paymentStatus}
+                    </span>
+                  ) : item.paymentStatus === "PENDENTE" ? (
+                    <span className="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">
+                      {item.paymentStatus}
+                    </span>
+                  ) : (
+                    <span className="bg-gray-400 text-white text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-400 dark:text-white">
+                      {item.paymentStatus}
+                    </span>
+                  )}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-black text-center">
                   <input
